@@ -1,4 +1,3 @@
-@ -1,1988 +0,0 @@
 {
   "run_id": "v0_B_base_openai_20261110T174407365229",
   "version": "v0",
@@ -815,9 +814,7 @@
         "case_failure_type": "out_of_scope",
         "observed_mismatch": "unexpected_tool_call",
         "failure_type": "out_of_scope",
-        "failures": [
-          "expected no tool call"
-        ]
+        "failures": ["expected no tool call"]
       },
       "tool_results": [
         {
@@ -900,10 +897,7 @@
         "case_failure_type": "missing_info",
         "observed_mismatch": "missing_tool_call",
         "failure_type": "missing_info",
-        "failures": [
-          "missing tool call clarify",
-          "extra tool call timeline"
-        ]
+        "failures": ["missing tool call clarify", "extra tool call timeline"]
       },
       "tool_results": [
         {
@@ -1018,10 +1012,7 @@
         "case_failure_type": "missing_info",
         "observed_mismatch": "missing_tool_call",
         "failure_type": "missing_info",
-        "failures": [
-          "missing tool call clarify",
-          "extra tool call fetch"
-        ]
+        "failures": ["missing tool call clarify", "extra tool call fetch"]
       },
       "tool_results": [
         {
@@ -1082,10 +1073,7 @@
         "case_failure_type": "wrong_boundary",
         "observed_mismatch": "missing_tool_call",
         "failure_type": "wrong_boundary",
-        "failures": [
-          "missing tool call clarify",
-          "extra tool call send"
-        ]
+        "failures": ["missing tool call clarify", "extra tool call send"]
       },
       "tool_results": [
         {
@@ -1323,9 +1311,7 @@
         "case_failure_type": "out_of_scope",
         "observed_mismatch": "unexpected_tool_call",
         "failure_type": "out_of_scope",
-        "failures": [
-          "expected no tool call"
-        ]
+        "failures": ["expected no tool call"]
       },
       "tool_results": [
         {
