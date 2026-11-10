@@ -15,7 +15,7 @@ load_lab_env(ROOT)
 
 st.markdown("""<style>
 .stApp {background: #f7f8fc;}
-.block-container {max-width: 1180px; padding-top: 2rem;}
+.block-container {max-width: 1180px; padding-top: 4rem;}
 [data-testid="stSidebar"] {background: #eef1f8;}
 [data-testid="stChatMessage"] {border: 1px solid #e3e8f1; border-radius: 16px; background: white;}
 .eyebrow {color: #5367b2; font-size: .75rem; font-weight: 700; letter-spacing: .18em; margin-bottom: .4rem;}
