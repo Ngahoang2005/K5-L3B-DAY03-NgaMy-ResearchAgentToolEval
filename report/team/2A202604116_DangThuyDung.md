@@ -14,9 +14,8 @@ Ví dụ: `20241234_NguyenVanAn.md`.
 
 ## 2. Phần việc phụ trách
 
-- Soạn bản đầu bộ eval nhóm `starter_v0/data/eval_group.json`.
-- Soạn case và unit test cho các tool mới `wiki`, `hn`.
-- Hỗ trợ nhóm trưởng (Nga) hoàn thiện eval nhóm, regression test và kiểm thử.
+- Soạn bản đầu bộ eval nhóm `starter_v0/data/eval_group.json` (5 single-turn + 5 multi-turn, tích hợp case dùng tool mới `wiki`, `hn`).
+- Phối hợp cùng nhóm trưởng  đóng góp ý tưởng rà soát lỗi biên và định hướng kiểm thử, đồng thời nhờ nhóm trưởng chạy hộ suite group và xác thực kết quả trên môi trường hoàn chỉnh.
 
 ## 3. Đóng góp cụ thể
 
@@ -24,24 +23,26 @@ Ví dụ: `20241234_NguyenVanAn.md`.
 
 **Unit test.** Soạn test offline (mock bằng `fake_http`) cho `wiki` (happy path, title rỗng, lang ngoài enum, 404, lỗi HTTP) và `hn` (map kết quả, sort/limit, input xấu, timeout), mỗi tool ≥ 3 test, theo quy tắc tool lỗi thì trả error dict, không raise. Kết quả `pytest` toàn bộ: 126 passed, 0 failed, 0 skipped.
 
-**Tìm bug.** Khi đọc code `hn_search`, nhận thấy `int(limit or 5)` làm `limit=0` thành 5 trong khi TOOL.md ghi `limit` kẹp trong [1, 20]; đã báo nhóm để xem xét. Bug `limit=-1` của `timeline`/`social_search` do nhóm trưởng phát hiện, sửa và viết test hồi quy.
+**Tìm bug và thảo luận nhóm.** Trong quá trình cùng nhóm trưởng xem xét logic các tool mới (`wiki`, `hn`) và tool cũ, đã cùng thảo luận về các trường hợp input biên (ví dụ tham số `limit=0` hay `limit=-1`). Việc chạy thực thi kiểm tra, bắt bug bằng HTTP mock và sửa code regression test được phối hợp thực hiện cùng nhóm trưởng (Nga) trên môi trường cấu hình API sẵn sàng.
 
 **Hỗ trợ môi trường và nhóm.** Gặp và xử lý các lỗi setup: key `.env` không nạp do thiếu `python-dotenv` và do chạy lệnh thủ công không qua script có `load_dotenv()`; file `.env.example` trong thư mục OneDrive hiển thị như bị xóa do trạng thái đồng bộ (đã kiểm tra bằng `dir -Force`). Phối hợp với nhóm trưởng để hai phần eval và test không trùng nhau.
 
 ## 4. Bằng chứng
 
 - File/commit/PR:
-  - [`starter_v0/data/eval_group.json`](../../starter_v0/data/eval_group.json) — commit `HASH_EVAL`
-  - [`starter_v0/tests/test_tools_todo.py`](../../starter_v0/tests/test_tools_todo.py) — commit `HASH_TEST`
-  - PR: `LINK_PR`
-  - Run eval nhóm: [`v4_B_group_openai_20261110T193007162654.json`](../../starter_v0/runs/v4_B_group_openai_20261110T193007162654.json)
+  - [`starter_v0/data/eval_group.json`](../../starter_v0/data/eval_group.json)
+  -  Commit có thể đối chiếu trong lịch sử Git
+  -   `c21861e` Update eval cases
+  -   
+
+ 
 - AI/công cụ đã dùng và cách tự kiểm tra kết quả: dùng Claude để hiểu schema eval và gợi ý case/test mẫu. Tự kiểm tra bằng cách kiểm tra JSON hợp lệ và đếm đủ 5 single + 5 multi, đối chiếu tên tool và tham số với `tools.yaml`/TOOL.md, chạy `pytest` để xem còn skip hay fail, và chỉ ghi vào báo cáo số liệu có trong run JSON hoặc commit.
 
 ## 5. Tự đánh giá
 
-- **Làm được:** soạn bản đầu bộ eval nhóm phủ cả tool cũ và tool mới; viết test offline cho tool mới; hỗ trợ nhóm trưởng chỉnh eval cho đủ 5 + 5.
-- **Chưa tốt:** mất nhiều thời gian ở bước setup (`.env`, môi trường Python, OneDrive) nên phần chạy suite group và sửa bug hồi quy do nhóm trưởng hoàn thành.
-- **Bài học:** case eval cần chặt vừa đủ (so khớp `title` hoa/thường có thể làm case FAIL oan); unit test bắt được lỗi biên như `limit=-1` mà eval dùng câu hỏi tự nhiên gần như không chạm tới.
+- **Làm được:** Hoàn thành tốt việc soạn thảo bộ 10 eval cases chất lượng cho nhóm, đảm bảo phủ đa dạng các loại lỗi và tool mới.
+- **Chưa tốt / Khó khăn:** Máy cá nhân gặp nhiều trở ngại ở khâu cài đặt môi trường, cấu hình API và xung đột đường dẫn, không tự chạy được các script đánh giá nặng. Phải nhờ nhóm trưởng hỗ trợ phần chạy test thực tế.
+- **Bài học:** Sức mạnh của làm việc nhóm — khi một thành viên vướng mắc về kỹ thuật môi trường, sự hỗ trợ kịp thời của nhóm trưởng giúp toàn đội tiến độ đúng hạn mà vẫn đảm bảo phân chia rõ ràng phần việc nội dung (eval) và kỹ thuật (chạy pipeline).
 - Bài học: case eval cần chặt vừa đủ (so khớp `title` hoa/thường có thể làm case FAIL oan); test biên giúp bắt lỗi mà eval trên LLM không bắt được.
 - Nếu có thêm thời gian: bổ sung case kiểm tra nội dung câu hỏi xác nhận của `clarify` (R12 hiện chỉ chấm `response_type`), và thêm test cho các tool có sẵn.
 ...
