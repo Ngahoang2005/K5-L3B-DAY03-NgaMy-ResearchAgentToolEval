@@ -38,12 +38,12 @@
     "metadata": {"skill": "no_tool_smalltalk", "difficulty": "easy", "what_it_tests": "Xã giao thông thường → trả lời thẳng, KHÔNG gọi tool."}
   },
   {
-    "id": "G05_new_tool_usage",
+    "id": "G05_wiki_definition_en",
     "phase": "B", "suite": "group",
-    "query": "<CÂU HỎI CẦN DÙNG TOOL MỚI CỦA PHƯƠNG>",
+    "query": "Cho mình đoạn tóm tắt Wikipedia tiếng Anh về Alan Turing",
     "failure_type": "wrong_tool",
-    "expect": {"tool_calls": [{"name": "<TEN_TOOL_MOI>", "args": {}}]},
-    "metadata": {"skill": "routing_new_tool", "difficulty": "medium", "what_it_tests": "Yêu cầu phù hợp tool mới của P3 → agent chọn đúng tool mới thay vì tool cũ."}
+    "expect": {"tool_calls": [{"name": "wiki", "args": {"title": "Alan Turing", "lang": "en"}}]},
+    "metadata": {"skill": "routing_new_tool_wiki", "difficulty": "medium", "what_it_tests": "Cần định nghĩa/bối cảnh nền từ Wikipedia → gọi wiki với title=Alan Turing, lang=en, không dùng lookup hay fetch."}
   },
   {
     "id": "G06_missing_topic_news",
