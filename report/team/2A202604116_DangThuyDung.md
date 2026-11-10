@@ -10,7 +10,7 @@ Ví dụ: `20241234_NguyenVanAn.md`.
 - Họ tên: Đặng Thùy Dung
 - MSSV: 2A202604116
 - Email: dangthuydung1410@gmail.com
-- Vai trò: P4 — Eval + Test (hỗ trợ nhóm trưởng Nga)
+- Vai trò: P4 — Eval + Test 
 
 ## 2. Phần việc phụ trách
 
@@ -36,7 +36,7 @@ Ví dụ: `20241234_NguyenVanAn.md`.
   -   
 
  
-- AI/công cụ đã dùng và cách tự kiểm tra kết quả: dùng Claude để hiểu schema eval và gợi ý case/test mẫu. Tự kiểm tra bằng cách kiểm tra JSON hợp lệ và đếm đủ 5 single + 5 multi, đối chiếu tên tool và tham số với `tools.yaml`/TOOL.md, chạy `pytest` để xem còn skip hay fail, và chỉ ghi vào báo cáo số liệu có trong run JSON hoặc commit.
+- AI/công cụ đã dùng và cách tự kiểm tra kết quả: dùng Claude để hiểu schema eval và gợi ý case/test mẫu. Tự kiểm tra bằng cách kiểm tra JSON hợp lệ và đếm đủ 5 single + 5 multi, đối chiếu tên tool và tham số với `tools.yaml`/TOOL.md.
 
 ## 5. Tự đánh giá
 
