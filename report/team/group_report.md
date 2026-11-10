@@ -16,37 +16,39 @@
 
 ### A1. Agent này làm được gì
 
-> 1–2 câu mô tả agent dùng để làm gì (cho team khác hiểu nhanh).
+Research Agent là trợ lý nghiên cứu có thể tìm thông tin trên web và X/Twitter, đọc một URL do người dùng cung cấp, tra cứu policy nội bộ hoặc tìm/đọc paper arXiv, sau đó trình bày các kết quả thành digest. Các thao tác cụ thể agent chọn phụ thuộc vào system prompt và tool declarations của version nhóm đang chạy.
 
-Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng hợp thành digest, và gửi lên Telegram khi được xác nhận."
+**Cách chạy UI:** trong terminal VS Code, chuyển vào `starter_v0/`, cài dependencies bằng `python -m pip install -r requirements.txt`, rồi chạy `streamlit run app.py`. Chọn provider và version ở sidebar. API key đặt trong `starter_v0/.env`; tuyệt đối không đưa file này lên GitHub hoặc vào báo cáo.
 
-**Cách chạy UI:**
+**Link dùng thử:** Chưa có URL public. UI đã chạy và được kiểm tra tại `http://127.0.0.1:8501` trên máy phát triển; địa chỉ này chỉ truy cập local. Chỉ bổ sung link Cloudflare Tunnel sau khi nhóm tích hợp prompt/tools CP2, kiểm tra guardrail và xác nhận key dùng cho demo đã an toàn.
 
-> Lệnh chạy UI (ví dụ `streamlit run app.py`) và dependency đã thêm vào `starter_v0/requirements.txt`.
-
-**Link dùng thử (deploy):**
-
-> Dán link public để team khác mở thử ngay. Cách deploy nhanh bằng Cloudflare Tunnel xem README. Nếu deploy Vercel/Streamlit Cloud thì dán link đó.
->
-> URL:
+**Lưu ý trước demo:** `system_prompt.md` hiện vẫn là prompt starter, trong đó có chỉ dẫn cố ý đoán thông tin còn thiếu và gửi/đăng ngay. Vì vậy chưa được giới thiệu hành vi hỏi lại hoặc xác nhận gửi là đã hoạt động; cần tích hợp và kiểm tra bản CP2 trước. UI đọc `artifacts/system_prompt.md` và `artifacts/tools.yaml` khi bắt đầu phiên mới, đồng thời lưu chat vào `transcripts/*.transcript.json`.
 
 ### A2. Tool agent có
 
-> Liệt kê các tool agent đang dùng (gồm tool mới nhóm tự thêm). Mỗi tool 1 dòng: tên + làm được gì.
+> Các tool đã đăng ký trong `tools/__init__.py` và khai báo trong `artifacts/tools.yaml`. Chưa có tool mới do nhóm thêm trong registry hiện tại.
 
 | Tên tool | Làm được gì | Tool mới nhóm thêm? |
 |---|---|---|
-| clarify | hỏi lại người dùng khi thiếu thông tin | không |
-|  |  |  |
-|  |  |  |
+| clarify | đặt câu hỏi và tạm dừng để chờ người dùng bổ sung | không |
+| timeline | lấy bài đăng gần đây của một tài khoản X | không |
+| social_search | tìm bài đăng X theo chủ đề/từ khóa | không |
+| lookup | tìm kiếm web, gồm nội dung chung hoặc tin tức | không |
+| fetch | đọc nội dung từ một URL cụ thể | không |
+| format | định dạng các item đã thu thập thành digest | không |
+| send | gửi text tới Telegram khi được gọi với `confirmed=true`; phải kiểm tra xác nhận của prompt trước khi dùng thật | không |
+| policy | tìm trong bộ tài liệu policy nội bộ mẫu | không |
+| papers | tìm paper/preprint trên arXiv | không |
+| paper_text | lấy text từ paper arXiv theo ID hoặc URL | không |
 
 ### A3. Câu hỏi mẫu để thử
 
-> 3–5 câu hỏi/yêu cầu mẫu để team khác tự thử agent ngay.
+> Dùng các câu sau để demo routing. Với yêu cầu gửi/đăng, chỉ kiểm tra bản nháp và bước xin xác nhận; không gửi thật trước khi CP2 đã được tích hợp và guardrail được kiểm thử.
 
-1.
-2.
-3.
+1. Tìm tin AI trong ngày và tóm tắt một vài kết quả kèm nguồn.
+2. Tìm bài đăng gần đây của tài khoản `@sama`.
+3. Đọc và tóm tắt URL `https://openai.com/research/`.
+4. Hỏi agent chuẩn bị một bản tin để gửi Telegram; xem agent tạo bản nháp và xử lý xác nhận thế nào. Không xác nhận gửi thật trong demo nếu chưa kiểm thử guardrail CP2.
 
 ## 3. Giải pháp
 
