@@ -381,3 +381,40 @@ def test_hf_http_error_returns_error_dict(fake_http) -> None:                   
     fake_http(FakeResponse({}, status_code=503))
     result = hf_tool(query="qwen")
     assert result["error"] == "HTTPError"
+
+
+# ---------------- Regression: limit âm trong timeline / social_search ----------------
+# Bug: _tweets_from cắt bằng items[: int(limit or 5)]. Model gửi limit=-1 thì Python
+# hiểu items[:-1] = "tất cả trừ phần tử cuối" → trả 9/10 tweet thay vì số mặc định.
+# Sửa: limit <= 0 (hoặc rỗng) → dùng mặc định 5. Xem B5 trong group_report.md.
+
+def _ten_tweets() -> list[dict]:
+    return [{"tweet_id": str(i), "text": f"tweet {i}", "screen_name": "sama"} for i in range(10)]
+
+
+def test_timeline_negative_limit_falls_back_to_default(monkeypatch, fake_http) -> None:
+    monkeypatch.setenv("RAPIDAPI_KEY", "test-key")
+    fake_http(FakeResponse({"timeline": _ten_tweets()}))
+
+    result = TOOL_FUNCTIONS["timeline"](screenname="sama", limit=-1)
+
+    assert len(result["items"]) == 5
+    assert result["items"][0]["summary"] == "tweet 0"
+
+
+def test_social_search_negative_limit_falls_back_to_default(monkeypatch, fake_http) -> None:
+    monkeypatch.setenv("RAPIDAPI_KEY", "test-key")
+    fake_http(FakeResponse({"timeline": _ten_tweets()}))
+
+    result = TOOL_FUNCTIONS["social_search"](query="OpenAI", limit=-3)
+
+    assert len(result["items"]) == 5
+
+
+def test_timeline_string_limit_from_model_is_parsed(monkeypatch, fake_http) -> None:
+    monkeypatch.setenv("RAPIDAPI_KEY", "test-key")
+    fake_http(FakeResponse({"timeline": _ten_tweets()}))
+
+    result = TOOL_FUNCTIONS["timeline"](screenname="sama", limit="3")
+
+    assert len(result["items"]) == 3
