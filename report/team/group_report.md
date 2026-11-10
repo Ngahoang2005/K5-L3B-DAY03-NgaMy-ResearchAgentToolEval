@@ -145,11 +145,22 @@ Run: [`starter_v0/runs/v0_B_base_openai_20261110T174407365229.json`](../../start
 
 ### B3. Team Eval Cases
 
-Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn + 5 multi turn).
+Bảng tổng hợp 10 eval cases trong `starter_v0/data/eval_group.json` (5 single-turn + 5 multi-turn) bao gồm cả các case kiểm thử công cụ mới:
 
 | Case ID | What It Tests | Expected Tool/Behavior | Result |
-| ------- | ------------- | ---------------------- | ------ |
-|         |               |                        |        |
+|---|---|---|---|
+| **G01_user_tweets_other_person** | Tin của một người cụ thể (Satya Nadella) → routing tới `timeline` với handle `satyanadella`, không dùng `social_search`. | `timeline(screenname="satyanadella")` | PASS |
+| **G02_topic_search_latest** | Yêu cầu "mới nhất" → `search_type=Latest` (đối lập với case Top trong bộ base). | `social_search(query="Claude", search_type="Latest")` | PASS |
+| **G04_no_tool_greeting** | Trò chuyện xã giao thông thường → trả lời trực tiếp, không gọi bất kỳ tool nào. | `no_tool: true` (`answer_without_tool`) | PASS |
+| **G05_wiki_definition_en** | Cần định nghĩa/bối cảnh nền từ Wikipedia → gọi tool mới `wiki` với `title="Alan Turing"`, `lang="en"`, không dùng `lookup` hay `fetch`. | `wiki(title="Alan Turing", lang="en")` | PASS |
+| **G09_hn_dev_community** | Hỏi cộng đồng lập trình/tech đang thảo luận gì → gọi tool mới `hn`, không dùng `social_search` hay `lookup`. | `hn(query="Rust")` | PASS |
+| **G07_send_confirm_then_fill** | Multi-turn: Dù user đã cung cấp nội dung, hành động gửi vẫn phải xin xác nhận `yes_no` trước, không tự ý gửi. | `clarify(response_type="yes_no")` | PASS |
+| **G08_correction_topic_search** | Multi-turn (3 turns): Sửa topic Bitcoin → Ethereum, thêm yêu cầu phổ biến nhất → `query="Ethereum"`, `search_type="Top"`. | `social_search(query="Ethereum", search_type="Top")` | PASS |
+| **G03_github_lang_then_sort** | Multi-turn (3 turns): Tìm thư viện mã nguồn mở → tool mới `github`; cộng dồn ràng buộc `language="python"` và `sort="updated"`. | `github(language="python", sort="updated")` | PASS |
+| **G06_hf_clarify_then_fill** | Multi-turn (3 turns): Tìm model AI mơ hồ, bổ sung dần → route tới tool mới `hf` (model đã train) với `sort="likes"`. | `hf(sort="likes")` | PASS |
+| **G10_hn_followup_sort_date** | Multi-turn (2 turns): Giữ `query="WebAssembly"` từ lượt 1, lượt 2 thêm yêu cầu bài mới nhất → `sort="date"`. | `hn(query="WebAssembly", sort="date")` | PASS |
+
+*Kết quả chung suite group:* **10/10 PASS** (Run artifact: `starter_v0/runs/v4_B_group_openai_20261110T193007162654.json`).
 
 ### B4. Live Chat Evidence
 
