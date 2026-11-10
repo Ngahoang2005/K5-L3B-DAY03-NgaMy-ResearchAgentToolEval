@@ -14,6 +14,7 @@
 | --: | ------ | ---- | ----- | ------ | ------- |
 |   1 | Hoàng Thị Thanh Nga | 2A202604079 | hoangthanhnga2005@gmail.com | Ngahoang2005 | P1 — Nhóm trưởng + System prompt; baseline v0, v1, v3, v4; C1, C2, C3, tổng hợp báo cáo nhóm |
 |   2 | Dương Thị Huyền | 2A202604077 | Chưa bổ sung | Chưa bổ sung | P2 — Tool declaration + Local model; C2, C3 và bonus local theo phân công |
+|   3 | Phạm Minh Tâm | 2A202604097 | minhtama11qc@gmail.com | minhtama11qc-hash | P5/UI — tinh chỉnh giao diện chat Streamlit (theo commit; nhóm xác nhận phân công chính thức) |
 
 ## Cá nhân
 
@@ -90,3 +91,18 @@ Theo yêu cầu bổ sung của Huyền, đã xây UI Streamlit để thử trư
 - [Hướng dẫn setup và bàn giao P2](docs/HUYEN-HANDOFF.md).
 - [Báo cáo nhóm — B1 và B7](report/team/group_report.md).
 - [Run v2](starter_v0/runs/v2_B_base_openai_20261110T180319042654.json) và dòng v2 trong [version_log.csv](starter_v0/artifacts/version_log.csv).
+
+## Phạm Minh Tâm — 2A202604097
+
+### Phần việc thể hiện trong repo
+
+- Tinh chỉnh UI chat Streamlit dùng chung: sửa khoảng cách đầu trang, bỏ các nút gợi ý, đổi tên tab, đặt thanh nhập cố định ở đáy màn hình trong tab trò chuyện và cập nhật trạng thái trống của lịch sử.
+- Đây là các thay đổi có commit của Tâm trong `starter_v0/app.py`; UI nền tảng ban đầu do Dương Thị Huyền thực hiện. Vai trò P5/UI trong bảng thành viên phản ánh các commit hiện có, cần nhóm xác nhận nếu khác phân công chính thức.
+
+### Đóng góp cụ thể và bằng chứng
+
+- [Báo cáo cá nhân — 2A202604097_PhamMinhTam.md](report/team/2A202604097_PhamMinhTam.md).
+- Mã và kiểm thử: [app.py](starter_v0/app.py), [test_ui.py](starter_v0/tests/test_ui.py); hướng dẫn: [UI-GUIDE.md](docs/UI-GUIDE.md).
+- Commit UI: `f1fa228` (sửa khoảng cách đầu trang), `2d021ca` (tinh chỉnh chat và lịch sử). Commit báo cáo nhóm: `c59d83f`.
+- Kiểm tra gần nhất: `python -m pytest -q starter_v0/tests` — **123 passed**.
+- Email và username GitHub đã ghi nhận: `minhtama11qc@gmail.com` và `minhtama11qc-hash`.
