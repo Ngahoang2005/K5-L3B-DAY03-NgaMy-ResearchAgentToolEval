@@ -20,9 +20,21 @@ tools:
     parameters:
       type: object
       properties:
-        question: {type: string, default: "", description: "Câu hỏi"}
-        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "Kiểu trả lời"}
-        options: {type: array, default: [], items: {type: string}, description: "Các lựa chọn"}
+        question: { type: string, default: "", description: "Câu hỏi" }
+        response_type:
+          {
+            type: string,
+            enum: [text, yes_no, choice],
+            default: "text",
+            description: "Kiểu trả lời",
+          }
+        options:
+          {
+            type: array,
+            default: [],
+            items: { type: string },
+            description: "Các lựa chọn",
+          }
       required: [question]
 
   - name: timeline
@@ -30,8 +42,8 @@ tools:
     parameters:
       type: object
       properties:
-        screenname: {type: string, default: "", description: "Tên tài khoản"}
-        limit: {type: integer, default: 5, description: "Số lượng"}
+        screenname: { type: string, default: "", description: "Tên tài khoản" }
+        limit: { type: integer, default: 5, description: "Số lượng" }
       required: [screenname]
 
   - name: social_search
@@ -39,9 +51,15 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Từ khóa"}
-        search_type: {type: string, enum: [Latest, Top], default: "Latest", description: "Cách sắp xếp"}
-        limit: {type: integer, default: 5, description: "Số lượng"}
+        query: { type: string, default: "", description: "Từ khóa" }
+        search_type:
+          {
+            type: string,
+            enum: [Latest, Top],
+            default: "Latest",
+            description: "Cách sắp xếp",
+          }
+        limit: { type: integer, default: 5, description: "Số lượng" }
       required: [query]
 
   - name: lookup
@@ -49,10 +67,22 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Truy vấn"}
-        topic: {type: string, enum: [general, news], default: "general", description: "Phân loại"}
-        timeframe: {type: string, enum: [day, week, month, year], default: "week", description: "Khoảng thời gian"}
-        max_results: {type: integer, default: 5, description: "Số kết quả"}
+        query: { type: string, default: "", description: "Truy vấn" }
+        topic:
+          {
+            type: string,
+            enum: [general, news],
+            default: "general",
+            description: "Phân loại",
+          }
+        timeframe:
+          {
+            type: string,
+            enum: [day, week, month, year],
+            default: "week",
+            description: "Khoảng thời gian",
+          }
+        max_results: { type: integer, default: 5, description: "Số kết quả" }
       required: [query]
 
   - name: fetch
@@ -60,7 +90,7 @@ tools:
     parameters:
       type: object
       properties:
-        url: {type: string, default: "", description: "Địa chỉ"}
+        url: { type: string, default: "", description: "Địa chỉ" }
       required: [url]
 
   - name: format
@@ -75,13 +105,19 @@ tools:
           items:
             type: object
             properties:
-              title: {type: string}
-              url: {type: string}
-              source: {type: string}
-              summary: {type: string}
-              section: {type: string}
-        template: {type: string, enum: [brief, sections, bullets, thread, daily_ai_vn], default: "sections", description: "Khuôn"}
-        headline: {type: string, default: "", description: "Tiêu đề"}
+              title: { type: string }
+              url: { type: string }
+              source: { type: string }
+              summary: { type: string }
+              section: { type: string }
+        template:
+          {
+            type: string,
+            enum: [brief, sections, bullets, thread, daily_ai_vn],
+            default: "sections",
+            description: "Khuôn",
+          }
+        headline: { type: string, default: "", description: "Tiêu đề" }
       required: [items, template]
 
   # ---------------- Bonus tools ----------------
@@ -90,8 +126,8 @@ tools:
     parameters:
       type: object
       properties:
-        text: {type: string, default: "", description: "Nội dung"}
-        confirmed: {type: boolean, default: false, description: "Cờ xác nhận"}
+        text: { type: string, default: "", description: "Nội dung" }
+        confirmed: { type: boolean, default: false, description: "Cờ xác nhận" }
       required: [text]
 
   - name: policy
@@ -99,9 +135,23 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Truy vấn"}
-        policy_area: {type: string, enum: [all, ai_research, source_citation, data_privacy, external_publishing, tool_usage], default: "all", description: "Nhóm"}
-        top_k: {type: integer, default: 3, description: "Số mục"}
+        query: { type: string, default: "", description: "Truy vấn" }
+        policy_area:
+          {
+            type: string,
+            enum:
+              [
+                all,
+                ai_research,
+                source_citation,
+                data_privacy,
+                external_publishing,
+                tool_usage,
+              ],
+            default: "all",
+            description: "Nhóm",
+          }
+        top_k: { type: integer, default: 3, description: "Số mục" }
       required: [query]
 
   - name: papers
@@ -109,9 +159,15 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Từ khóa"}
-        max_results: {type: integer, default: 5, description: "Số lượng"}
-        sort_by: {type: string, enum: [relevance, lastUpdatedDate, submittedDate], default: "relevance", description: "Sắp xếp"}
+        query: { type: string, default: "", description: "Từ khóa" }
+        max_results: { type: integer, default: 5, description: "Số lượng" }
+        sort_by:
+          {
+            type: string,
+            enum: [relevance, lastUpdatedDate, submittedDate],
+            default: "relevance",
+            description: "Sắp xếp",
+          }
       required: [query]
 
   - name: paper_text
@@ -119,7 +175,71 @@ tools:
     parameters:
       type: object
       properties:
-        arxiv_url: {type: string, default: "", description: "ID hoặc địa chỉ"}
-        max_pages: {type: integer, default: 5, description: "Số trang"}
-        max_chars: {type: integer, default: 8000, description: "Số ký tự"}
+        arxiv_url: { type: string, default: "", description: "ID hoặc địa chỉ" }
+        max_pages: { type: integer, default: 5, description: "Số trang" }
+        max_chars: { type: integer, default: 8000, description: "Số ký tự" }
       required: [arxiv_url]
+
+  # ---------------- New tools (CP3) ----------------
+  - name: wiki
+    description: "Lấy tóm tắt một bài Wikipedia để có định nghĩa/bối cảnh nền về một khái niệm, người hoặc tổ chức. KHÔNG dùng cho tin tức mới (dùng lookup) hay để đọc một URL cụ thể (dùng fetch)."
+    parameters:
+      type: object
+      properties:
+        title:
+          {
+            type: string,
+            default: "",
+            description: "Tên bài Wikipedia, ví dụ 'Transformer (machine learning model)' hoặc 'Trí tuệ nhân tạo'",
+          }
+        lang:
+          {
+            type: string,
+            enum: [vi, en],
+            default: "vi",
+            description: "Ngôn ngữ Wikipedia: vi hoặc en. Khái niệm kỹ thuật thường dùng en.",
+          }
+      required: [title]
+
+  - name: hn
+    description: "Tìm bài thảo luận trên Hacker News để biết cộng đồng dev/tech đang nói gì về một chủ đề. KHÔNG dùng cho tin chính thống (dùng lookup) hay bài trên X/Twitter (dùng social_search)."
+    parameters:
+      type: object
+      properties:
+        query:
+          {
+            type: string,
+            default: "",
+            description: "Từ khóa tiếng Anh, ví dụ 'GPT-6' hoặc 'AI agents'",
+          }
+        sort:
+          {
+            type: string,
+            enum: [relevance, date],
+            default: "relevance",
+            description: "relevance = liên quan nhất, date = mới nhất",
+          }
+        limit: { type: integer, default: 5, description: "Số bài trả về, 1-20" }
+      required: [query]
+
+  - name: github
+    description: "Tìm repository mã nguồn mở trên GitHub: thư viện, framework, code mẫu, repo chính thức của một dự án hoặc paper. KHÔNG dùng để tìm model đã train (dùng hf), paper (dùng papers) hay tin tức (dùng lookup)."
+    parameters:
+      type: object
+      properties:
+        query: {type: string, default: "", description: "Từ khóa tiếng Anh, ví dụ 'llm agent framework' hoặc 'vietnamese tokenizer'"}
+        sort: {type: string, enum: [stars, updated], default: "stars", description: "stars = nhiều sao nhất, updated = mới cập nhật gần đây"}
+        language: {type: string, default: "", description: "Lọc theo ngôn ngữ lập trình, ví dụ 'python'. Để trống nếu không cần lọc."}
+        limit: {type: integer, default: 5, description: "Số repo trả về, 1-20"}
+      required: [query]
+
+  - name: hf
+    description: "Tìm model AI đã train sẵn trên Hugging Face Hub (LLM, embedding, nhận dạng giọng nói...) và xem độ phổ biến. KHÔNG dùng để tìm code/thư viện (dùng github), paper (dùng papers) hay tin tức (dùng lookup)."
+    parameters:
+      type: object
+      properties:
+        query: {type: string, default: "", description: "Tên hoặc từ khóa model, ví dụ 'qwen', 'vietnamese embedding'"}
+        sort: {type: string, enum: [downloads, likes, recent], default: "downloads", description: "downloads = nhiều lượt tải nhất, likes = nhiều like nhất, recent = mới cập nhật"}
+        task: {type: string, default: "", description: "Pipeline tag tuỳ chọn, ví dụ 'text-generation', 'automatic-speech-recognition'. Để trống nếu không cần lọc."}
+        limit: {type: integer, default: 5, description: "Số model trả về, 1-20"}
+      required: [query]
