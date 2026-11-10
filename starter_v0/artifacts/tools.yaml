@@ -16,9 +16,26 @@ tools:
     parameters:
       type: object
       properties:
-        question: {type: string, default: "", description: "Câu hỏi cụ thể về thông tin còn thiếu; khi xin gửi, hỏi người dùng có xác nhận gửi nội dung đó lên Telegram không."}
-        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "yes_no: BẮT BUỘC khi xin xác nhận gửi/đăng/hành động có tác dụng phụ; text: khi thiếu handle, URL hoặc chủ đề để tra cứu; choice: chọn từ options."}
-        options: {type: array, default: [], items: {type: string}, description: "Các lựa chọn khi response_type=choice; để [] cho text hoặc yes_no."}
+        question:
+          {
+            type: string,
+            default: "",
+            description: "Câu hỏi cụ thể về thông tin còn thiếu; khi xin gửi, hỏi người dùng có xác nhận gửi nội dung đó lên Telegram không.",
+          }
+        response_type:
+          {
+            type: string,
+            enum: [text, yes_no, choice],
+            default: "text",
+            description: "yes_no: BẮT BUỘC khi xin xác nhận gửi/đăng/hành động có tác dụng phụ; text: khi thiếu handle, URL hoặc chủ đề để tra cứu; choice: chọn từ options.",
+          }
+        options:
+          {
+            type: array,
+            default: [],
+            items: { type: string },
+            description: "Các lựa chọn khi response_type=choice; để [] cho text hoặc yes_no.",
+          }
       required: [question]
 
   - name: timeline
@@ -26,8 +43,18 @@ tools:
     parameters:
       type: object
       properties:
-        screenname: {type: string, default: "", description: "Handle X/Twitter không có @, không phải tên hiển thị hay URL. Bỏ @ từ handle đã biết; nếu tên người chưa ánh xạ chắc chắn sang handle thì hỏi clarify, không đoán."}
-        limit: {type: integer, default: 5, description: "Số bài cần lấy, số nguyên dương theo yêu cầu; mặc định 5 nếu không nêu."}
+        screenname:
+          {
+            type: string,
+            default: "",
+            description: "Handle X/Twitter không có @, không phải tên hiển thị hay URL. Bỏ @ từ handle đã biết; nếu tên người chưa ánh xạ chắc chắn sang handle thì hỏi clarify, không đoán.",
+          }
+        limit:
+          {
+            type: integer,
+            default: 5,
+            description: "Số bài cần lấy, số nguyên dương theo yêu cầu; mặc định 5 nếu không nêu.",
+          }
       required: [screenname]
 
   - name: social_search
@@ -35,9 +62,25 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Chỉ từ khóa chủ đề, không rỗng, ví dụ 'AI'. Không thêm chữ chỉ thời gian/thể loại như 'mới nhất', 'tweet', 'hôm nay'; độ mới thể hiện qua search_type."}
-        search_type: {type: string, enum: [Latest, Top], default: "Latest", description: "Đúng chữ hoa: Latest cho gần đây/mới nhất (mặc định); Top cho nổi bật, phổ biến hoặc nhiều tương tác."}
-        limit: {type: integer, default: 5, description: "Số bài, số nguyên dương; dùng số người dùng yêu cầu hoặc mặc định 5."}
+        query:
+          {
+            type: string,
+            default: "",
+            description: "Chỉ từ khóa chủ đề, không rỗng, ví dụ 'AI'. Không thêm chữ chỉ thời gian/thể loại như 'mới nhất', 'tweet', 'hôm nay'; độ mới thể hiện qua search_type.",
+          }
+        search_type:
+          {
+            type: string,
+            enum: [Latest, Top],
+            default: "Latest",
+            description: "Đúng chữ hoa: Latest cho gần đây/mới nhất (mặc định); Top cho nổi bật, phổ biến hoặc nhiều tương tác.",
+          }
+        limit:
+          {
+            type: integer,
+            default: 5,
+            description: "Số bài, số nguyên dương; dùng số người dùng yêu cầu hoặc mặc định 5.",
+          }
       required: [query]
 
   - name: lookup
@@ -45,10 +88,32 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Chỉ từ khóa chủ đề, không rỗng, ví dụ 'AI' hoặc 'robotics'. Không thêm 'tin tức', 'news', 'hôm nay', 'mới nhất' vào query; tin tức dùng topic=news, thời gian dùng timeframe."}
-        topic: {type: string, enum: [general, news], default: "general", description: "news cho tin tức/bản tin/cập nhật thời sự; general cho tra cứu kiến thức thông thường."}
-        timeframe: {type: string, enum: [day, week, month, year], default: "week", description: "day cho hôm nay/24 giờ qua, week cho 7 ngày/tuần qua, month cho tháng qua, year cho năm qua; mặc định week. Không bịa mốc thời gian khác yêu cầu."}
-        max_results: {type: integer, default: 5, description: "Số kết quả, số nguyên dương theo yêu cầu; mặc định 5."}
+        query:
+          {
+            type: string,
+            default: "",
+            description: "Chỉ từ khóa chủ đề, không rỗng, ví dụ 'AI' hoặc 'robotics'. Không thêm 'tin tức', 'news', 'hôm nay', 'mới nhất' vào query; tin tức dùng topic=news, thời gian dùng timeframe.",
+          }
+        topic:
+          {
+            type: string,
+            enum: [general, news],
+            default: "general",
+            description: "news cho tin tức/bản tin/cập nhật thời sự; general cho tra cứu kiến thức thông thường.",
+          }
+        timeframe:
+          {
+            type: string,
+            enum: [day, week, month, year],
+            default: "week",
+            description: "day cho hôm nay/24 giờ qua, week cho 7 ngày/tuần qua, month cho tháng qua, year cho năm qua; mặc định week. Không bịa mốc thời gian khác yêu cầu.",
+          }
+        max_results:
+          {
+            type: integer,
+            default: 5,
+            description: "Số kết quả, số nguyên dương theo yêu cầu; mặc định 5.",
+          }
       required: [query]
 
   - name: fetch
@@ -56,7 +121,12 @@ tools:
     parameters:
       type: object
       properties:
-        url: {type: string, default: "", description: "URL HTTP/HTTPS đầy đủ đã biết từ ngữ cảnh; không truyền tên trang, từ khóa hoặc URL tự đoán."}
+        url:
+          {
+            type: string,
+            default: "",
+            description: "URL HTTP/HTTPS đầy đủ đã biết từ ngữ cảnh; không truyền tên trang, từ khóa hoặc URL tự đoán.",
+          }
       required: [url]
 
   - name: format
@@ -71,13 +141,24 @@ tools:
           items:
             type: object
             properties:
-              title: {type: string}
-              url: {type: string}
-              source: {type: string}
-              summary: {type: string}
-              section: {type: string}
-        template: {type: string, enum: [brief, sections, bullets, thread, daily_ai_vn], default: "sections", description: "brief: ngắn tối đa 5 item; sections: chia mục (mặc định); bullets: gạch đầu dòng; thread: chuỗi đánh số; daily_ai_vn: bản tin AI tiếng Việt. Chọn theo định dạng yêu cầu."}
-        headline: {type: string, default: "", description: "Tiêu đề theo nội dung/yêu cầu; để rỗng nếu không cần. Được dùng với brief, sections, daily_ai_vn."}
+              title: { type: string }
+              url: { type: string }
+              source: { type: string }
+              summary: { type: string }
+              section: { type: string }
+        template:
+          {
+            type: string,
+            enum: [brief, sections, bullets, thread, daily_ai_vn],
+            default: "sections",
+            description: "brief: ngắn tối đa 5 item; sections: chia mục (mặc định); bullets: gạch đầu dòng; thread: chuỗi đánh số; daily_ai_vn: bản tin AI tiếng Việt. Chọn theo định dạng yêu cầu.",
+          }
+        headline:
+          {
+            type: string,
+            default: "",
+            description: "Tiêu đề theo nội dung/yêu cầu; để rỗng nếu không cần. Được dùng với brief, sections, daily_ai_vn.",
+          }
       required: [items, template]
 
   # ---------------- Bonus tools ----------------
@@ -86,8 +167,18 @@ tools:
     parameters:
       type: object
       properties:
-        text: {type: string, default: "", description: "Đúng nội dung cuối cùng người dùng đã duyệt, không rỗng; nếu sửa nội dung sau xác nhận thì hỏi lại trước khi gửi."}
-        confirmed: {type: boolean, default: false, description: "Boolean true chỉ khi đã có xác nhận rõ từ người dùng cho nội dung và đích hiện tại; không dùng chuỗi 'true'/'false', không tự suy diễn sự đồng ý. Chưa xác nhận thì gọi clarify, không gọi send."}
+        text:
+          {
+            type: string,
+            default: "",
+            description: "Đúng nội dung cuối cùng người dùng đã duyệt, không rỗng; nếu sửa nội dung sau xác nhận thì hỏi lại trước khi gửi.",
+          }
+        confirmed:
+          {
+            type: boolean,
+            default: false,
+            description: "Boolean true chỉ khi đã có xác nhận rõ từ người dùng cho nội dung và đích hiện tại; không dùng chuỗi 'true'/'false', không tự suy diễn sự đồng ý. Chưa xác nhận thì gọi clarify, không gọi send.",
+          }
       required: [text]
 
   - name: policy
@@ -95,9 +186,33 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Từ khóa/câu hỏi về quy định công ty, không rỗng."}
-        policy_area: {type: string, enum: [all, ai_research, source_citation, data_privacy, external_publishing, tool_usage], default: "all", description: "Luôn truyền tham số này. Chọn đúng MỘT vùng theo chủ đề câu hỏi: source_citation = độ tin cậy/xác minh nguồn, cái gì được coi là fact, trích dẫn, dùng tweet/mạng xã hội/arXiv làm nguồn; ai_research = quy trình/workflow nghiên cứu AI, cách làm research; data_privacy = API key, secret, dữ liệu cá nhân/khách hàng; external_publishing = đăng/xuất bản ra ngoài (Telegram, blog, mạng xã hội), phê duyệt trước khi đăng; tool_usage = quy định dùng tool/agent. Chỉ dùng all khi câu hỏi thật sự thuộc nhiều vùng cùng lúc, không dùng all chỉ vì chưa chắc."}
-        top_k: {type: integer, default: 3, description: "Số đoạn chính sách trả về, số nguyên dương; mặc định 3."}
+        query:
+          {
+            type: string,
+            default: "",
+            description: "Từ khóa/câu hỏi về quy định công ty, không rỗng.",
+          }
+        policy_area:
+          {
+            type: string,
+            enum:
+              [
+                all,
+                ai_research,
+                source_citation,
+                data_privacy,
+                external_publishing,
+                tool_usage,
+              ],
+            default: "all",
+            description: "Luôn truyền tham số này. Chọn đúng MỘT vùng theo chủ đề câu hỏi: source_citation = độ tin cậy/xác minh nguồn, cái gì được coi là fact, trích dẫn, dùng tweet/mạng xã hội/arXiv làm nguồn; ai_research = quy trình/workflow nghiên cứu AI, cách làm research; data_privacy = API key, secret, dữ liệu cá nhân/khách hàng; external_publishing = đăng/xuất bản ra ngoài (Telegram, blog, mạng xã hội), phê duyệt trước khi đăng; tool_usage = quy định dùng tool/agent. Chỉ dùng all khi câu hỏi thật sự thuộc nhiều vùng cùng lúc, không dùng all chỉ vì chưa chắc.",
+          }
+        top_k:
+          {
+            type: integer,
+            default: 3,
+            description: "Số đoạn chính sách trả về, số nguyên dương; mặc định 3.",
+          }
       required: [query]
 
   - name: papers
@@ -105,9 +220,25 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Chủ đề/từ khóa khoa học hoặc truy vấn arXiv, không rỗng."}
-        max_results: {type: integer, default: 5, description: "Số paper cần lấy, số nguyên dương; mặc định 5."}
-        sort_by: {type: string, enum: [relevance, lastUpdatedDate, submittedDate], default: "relevance", description: "relevance cho liên quan nhất; lastUpdatedDate cho cập nhật mới; submittedDate cho ngày nộp mới. Dùng đúng tên enum."}
+        query:
+          {
+            type: string,
+            default: "",
+            description: "Chủ đề/từ khóa khoa học hoặc truy vấn arXiv, không rỗng.",
+          }
+        max_results:
+          {
+            type: integer,
+            default: 5,
+            description: "Số paper cần lấy, số nguyên dương; mặc định 5.",
+          }
+        sort_by:
+          {
+            type: string,
+            enum: [relevance, lastUpdatedDate, submittedDate],
+            default: "relevance",
+            description: "relevance cho liên quan nhất; lastUpdatedDate cho cập nhật mới; submittedDate cho ngày nộp mới. Dùng đúng tên enum.",
+          }
       required: [query]
 
   - name: paper_text
@@ -115,11 +246,28 @@ tools:
     parameters:
       type: object
       properties:
-        arxiv_url: {type: string, default: "", description: "ID arXiv dạng YYMM.NNNNN (có thể kèm vN) hoặc URL arxiv.org/abs/ hay /pdf/ chứa ID đã biết; không nhận chủ đề hoặc DOI thay ID."}
-        max_pages: {type: integer, default: 5, description: "Số trang đầu tối đa cần trích, số nguyên dương; mặc định 5, không vượt số trang PDF thực tế."}
-        max_chars: {type: integer, default: 8000, description: "Số ký tự trích tối đa; số nguyên từ 1000 đến 20000, mặc định 8000 theo giới hạn implementation."}
+        arxiv_url:
+          {
+            type: string,
+            default: "",
+            description: "ID arXiv dạng YYMM.NNNNN (có thể kèm vN) hoặc URL arxiv.org/abs/ hay /pdf/ chứa ID đã biết; không nhận chủ đề hoặc DOI thay ID.",
+          }
+        max_pages:
+          {
+            type: integer,
+            default: 5,
+            description: "Số trang đầu tối đa cần trích, số nguyên dương; mặc định 5, không vượt số trang PDF thực tế.",
+          }
+        max_chars:
+          {
+            type: integer,
+            default: 8000,
+            description: "Số ký tự trích tối đa; số nguyên từ 1000 đến 20000, mặc định 8000 theo giới hạn implementation.",
+          }
       required: [arxiv_url]
-- name: wiki
+
+  # ---------------- New tools (CP3) ----------------
+  - name: wiki
     description: "Lấy tóm tắt một bài Wikipedia để có định nghĩa/bối cảnh nền về một khái niệm, người hoặc tổ chức. KHÔNG dùng cho tin tức mới (dùng lookup) hay để đọc một URL cụ thể (dùng fetch)."
     parameters:
       type: object
@@ -165,10 +313,27 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Từ khóa tiếng Anh, ví dụ 'llm agent framework' hoặc 'vietnamese tokenizer'"}
-        sort: {type: string, enum: [stars, updated], default: "stars", description: "stars = nhiều sao nhất, updated = mới cập nhật gần đây"}
-        language: {type: string, default: "", description: "Lọc theo ngôn ngữ lập trình, ví dụ 'python'. Để trống nếu không cần lọc."}
-        limit: {type: integer, default: 5, description: "Số repo trả về, 1-20"}
+        query:
+          {
+            type: string,
+            default: "",
+            description: "Từ khóa tiếng Anh, ví dụ 'llm agent framework' hoặc 'vietnamese tokenizer'",
+          }
+        sort:
+          {
+            type: string,
+            enum: [stars, updated],
+            default: "stars",
+            description: "stars = nhiều sao nhất, updated = mới cập nhật gần đây",
+          }
+        language:
+          {
+            type: string,
+            default: "",
+            description: "Lọc theo ngôn ngữ lập trình, ví dụ 'python'. Để trống nếu không cần lọc.",
+          }
+        limit:
+          { type: integer, default: 5, description: "Số repo trả về, 1-20" }
       required: [query]
 
   - name: hf
@@ -176,8 +341,25 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Tên hoặc từ khóa model, ví dụ 'qwen', 'vietnamese embedding'"}
-        sort: {type: string, enum: [downloads, likes, recent], default: "downloads", description: "downloads = nhiều lượt tải nhất, likes = nhiều like nhất, recent = mới cập nhật"}
-        task: {type: string, default: "", description: "Pipeline tag tuỳ chọn, ví dụ 'text-generation', 'automatic-speech-recognition'. Để trống nếu không cần lọc."}
-        limit: {type: integer, default: 5, description: "Số model trả về, 1-20"}
+        query:
+          {
+            type: string,
+            default: "",
+            description: "Tên hoặc từ khóa model, ví dụ 'qwen', 'vietnamese embedding'",
+          }
+        sort:
+          {
+            type: string,
+            enum: [downloads, likes, recent],
+            default: "downloads",
+            description: "downloads = nhiều lượt tải nhất, likes = nhiều like nhất, recent = mới cập nhật",
+          }
+        task:
+          {
+            type: string,
+            default: "",
+            description: "Pipeline tag tuỳ chọn, ví dụ 'text-generation', 'automatic-speech-recognition'. Để trống nếu không cần lọc.",
+          }
+        limit:
+          { type: integer, default: 5, description: "Số model trả về, 1-20" }
       required: [query]

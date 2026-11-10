@@ -32,7 +32,7 @@ Ví dụ: “Tìm 3 tin AI trong tuần qua, kèm nguồn”; “Lấy 3 bài m�
 | P4 — eval | Dùng câu hỏi trong eval để khám phá lỗi; điểm chính thức vẫn chạy run_eval.py. |
 | P5 — UI/demo | Dùng app.py làm nền UI chung, bổ sung cách trình bày/demo nếu cần; giữ transcript và ghi link triển khai thật vào A1. |
 
-Prompt mặc định `system_prompt_ui.md` dành cho trải nghiệm demo nhiều bước; **không phải prompt v1/v2/v3 đã đo của nhóm**. Prompt gốc và eval không bị sửa. Chọn prompt dự án khi muốn kiểm tra phần P1; prompt starter có chỉ dẫn cố ý sai nên hành vi có thể kém hơn. Model vẫn có thể chọn sai tool; UI hiển thị lỗi để nhóm phân tích, không tự đổi tool call nhằm làm đẹp kết quả.
+Mặc định UI dùng `system_prompt.md` (prompt v1 của Nga, bản đã đo ở v1/v2) và `tools.yaml` (declaration v2 + các tool mới của nhóm), để transcript khớp với bản đã eval. `system_prompt_ui.md` vẫn chọn được trong sidebar, dành cho demo nhiều bước; **không phải prompt đã đo của nhóm**. Model vẫn có thể chọn sai tool; UI hiển thị lỗi để nhóm phân tích, không tự đổi tool call nhằm làm đẹp kết quả.
 
 UI dùng lại `chat.run_model_tool_loop`, thêm executor riêng để kiểm tra schema và chặn hành động chờ xác nhận. CLI vẫn dùng executor mặc định; `agent.py`/`run_eval.py` không đổi. Transcript có `origin=streamlit`, `ui_confirmation_guard=true`, model, prompt/tools hash, snapshot, rounds và tool_events. Vì guard và vòng lặp khác eval một bước, không dùng transcript UI thay cho metric eval hoặc yêu cầu chạy `chat.py` trong đề.
 
