@@ -76,6 +76,22 @@
     "failure_type": "wrong_arg_value",
     "expect": {"tool_calls": [{"name": "social_search", "args": {"query": "Ethereum", "search_type": "Top"}}]},
     "metadata": {"skill": "multiturn_correction_topic", "difficulty": "hard", "what_it_tests": "3 turns: sửa Bitcoin→Ethereum, rồi thêm yêu cầu Top → query=Ethereum, search_type=Top."}
-  }
+  },
+  {
+  "id": "G09_hn_dev_community",
+  "phase": "B", "suite": "group",
+  "query": "Dân lập trình trên Hacker News đang bàn gì về Rust?",
+  "failure_type": "wrong_tool",
+  "expect": {"tool_calls": [{"name": "hn", "args": {"query": "Rust"}}]},
+  "metadata": {"skill": "routing_new_tool_hn", "difficulty": "medium", "what_it_tests": "Hỏi cộng đồng dev/tech bàn gì → gọi hn, không dùng social_search hay lookup."}
+ },
+  {
+  "id": "G10_hn_sort_date",
+  "phase": "B", "suite": "group",
+  "query": "Tìm các bài mới nhất trên Hacker News về WebAssembly",
+  "failure_type": "wrong_arg_value",
+  "expect": {"tool_calls": [{"name": "hn", "args": {"query": "WebAssembly", "sort": "date"}}]},
+  "metadata": {"skill": "arg_hn_sort_date", "difficulty": "medium", "what_it_tests": "'mới nhất' → sort=date (mặc định là relevance nên agent dễ bỏ sót)."}
+} 
 ]
 }
