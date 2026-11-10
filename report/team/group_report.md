@@ -74,7 +74,23 @@ Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. 
 | v0                | baseline         | Đo hành vi của prompt + tools gốc starter trước khi sửa          |              — |  0.70 (14/20) | [`v0_B_base_openai_20261110T174407365229.json`](../../starter_v0/runs/v0_B_base_openai_20261110T174407365229.json) |
 | v1                | system_prompt.md | 5/6 case FAIL ở v0 (R08, R10, R11, R12, R14) do 3 chỉ dẫn xấu của starter (đoán thay vì hỏi, gửi không cần xác nhận, ép một tool). Thay bằng: thiếu thông tin thì `clarify`, gửi phải xác nhận, ngoài phạm vi thì trả lời text, cho phép nhiều tool | 0.70 | 0.95 (19/20) | [`v1_B_base_openai_20261110T175638536349.json`](../../starter_v0/runs/v1_B_base_openai_20261110T175638536349.json) |
 | v2                | tools.yaml       | Case FAIL duy nhất của v1 là R12 (`clarify` dạng `text` thay vì `yes_no`) vì declaration không nói ưu tiên xác nhận khi nội dung gửi còn mơ hồ. Giữ prompt v1, thay tool declaration: yêu cầu gửi/đăng luôn bắt đầu bằng `clarify` `yes_no`; `query` chỉ chứa từ khóa (tin tức dùng `topic=news`); mỗi tool nói khi nào dùng/không dùng | 0.95 | 1.00 (20/20) | [`v2_B_base_openai_20261110T180319042654.json`](../../starter_v0/runs/v2_B_base_openai_20261110T180319042654.json) |
-| v3                |                  |                                                                  |                |              |                                    |
+| v3                | tools.yaml (`policy` → `policy_area`) | Bộ extension trên v2 = 0.70: E01, E08 chọn sai `policy_area` (`all` / bỏ trống) vì mô tả quá ngắn và cho dùng `all` "khi chưa rõ". Viết lại mô tả từng vùng theo loại câu hỏi, chỉ dùng `all` khi thật sự nhiều vùng | base 1.00 · ext 0.70 | base 0.95 / 1.00 (2 run) · ext 1.00 (3 run) | base: [`…182143417083`](../../starter_v0/runs/v3_B_base_openai_20261110T182143417083.json), [`…182429746542`](../../starter_v0/runs/v3_B_base_openai_20261110T182429746542.json); ext: [`…182208227039`](../../starter_v0/runs/v3_B_extension_openai_20261110T182208227039.json), [`…182515936086`](../../starter_v0/runs/v3_B_extension_openai_20261110T182515936086.json), [`…182637521174`](../../starter_v0/runs/v3_B_extension_openai_20261110T182637521174.json) |
+
+**v2 → v3** (`v2+pea21801f0290+t64a6349a4b00` → `v3+pea21801f0290+t544c396ba964`: prompt giữ nguyên v1, chỉ sửa mô tả `policy_area` trong `tools.yaml`).
+
+Bộ base đã đạt 1.00 ở v2 nên không còn case FAIL để đặt giả thuyết. Nhóm chạy bộ extension có sẵn của đề ([`data/eval_research_extension.json`](../../starter_v0/data/eval_research_extension.json), 10 case về `policy`, `papers`, `paper_text` và gọi nhiều tool) trên v2 để tìm lỗi: [`v2_B_extension_openai_20261110T180957750053.json`](../../starter_v0/runs/v2_B_extension_openai_20261110T180957750053.json) = 0.70, FAIL E01 (`policy_area` = `all` thay vì `source_citation`), E08 (thiếu `policy_area`, cần `ai_research`), E06 (chỉ gọi `policy`, thiếu `lookup`).
+
+| Bộ | v2 | v3 |
+|---|---:|---:|
+| extension | 0.70 | **1.00** (3/3 run) |
+| base | 1.00 | 0.95 (run 1), **1.00** (run 2) |
+
+- Giả thuyết được xác nhận: E01, E08 PASS ổn định ở cả 3 run extension.
+- E06 cũng PASS dù v3 không nhắm tới (lỗi E06 là gọi tuần tự, thuộc prompt). Chưa đủ bằng chứng để nói v3 sửa được E06; có thể do dao động của model.
+- **R12 không ổn định:** cùng hash v3, run base 1 FAIL R12 (`clarify` dạng `text` thay vì `yes_no`), run 2 PASS. R12 cũng đã đổi qua lại giữa các version (v1 FAIL, v2 PASS). Câu "Đăng bản tin **này**" thiếu nội dung nên model phân vân giữa hỏi nội dung (`text`) và xin xác nhận (`yes_no`). v3 không sửa mô tả `clarify`/`send`, nên lần FAIL này nhiều khả năng do dao động của `gpt-4o-mini` (temperature 0 vẫn không hoàn toàn tất định), không phải do thay đổi `policy_area`.
+- Hướng tiếp theo (v4, tùy chọn): thêm rule trong prompt "yêu cầu gửi/đăng luôn bắt đầu bằng `clarify` `yes_no`, kể cả khi thiếu nội dung" để R12 ổn định.
+
+**Ghi chú về hash:** run extension v2 có `tools_hash` `2c04d07a23e7` khác `64a6349a4b00` của run base v2, dù nội dung `tools.yaml` giống hệt. Khác biệt chỉ do kiểu xuống dòng (CRLF trên máy Nga, LF trên máy Huyền); đã kiểm tra bằng cách đổi CRLF → LF thì hash về đúng `64a6349a4b00`.
 
 Tất cả run dùng provider `openai`, model `gpt-4o-mini`, bộ `data/eval_base.json` (20 case), `provider_error_cases == 0`, `measured_cases == 20`.
 

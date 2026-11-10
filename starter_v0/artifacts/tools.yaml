@@ -96,7 +96,7 @@ tools:
       type: object
       properties:
         query: {type: string, default: "", description: "Từ khóa/câu hỏi về quy định công ty, không rỗng."}
-        policy_area: {type: string, enum: [all, ai_research, source_citation, data_privacy, external_publishing, tool_usage], default: "all", description: "ai_research: nghiên cứu AI; source_citation: trích nguồn; data_privacy: riêng tư; external_publishing: xuất bản bên ngoài; tool_usage: sử dụng tool; all khi cần nhiều nhóm hoặc chưa rõ."}
+        policy_area: {type: string, enum: [all, ai_research, source_citation, data_privacy, external_publishing, tool_usage], default: "all", description: "Luôn truyền tham số này. Chọn đúng MỘT vùng theo chủ đề câu hỏi: source_citation = độ tin cậy/xác minh nguồn, cái gì được coi là fact, trích dẫn, dùng tweet/mạng xã hội/arXiv làm nguồn; ai_research = quy trình/workflow nghiên cứu AI, cách làm research; data_privacy = API key, secret, dữ liệu cá nhân/khách hàng; external_publishing = đăng/xuất bản ra ngoài (Telegram, blog, mạng xã hội), phê duyệt trước khi đăng; tool_usage = quy định dùng tool/agent. Chỉ dùng all khi câu hỏi thật sự thuộc nhiều vùng cùng lúc, không dùng all chỉ vì chưa chắc."}
         top_k: {type: integer, default: 3, description: "Số đoạn chính sách trả về, số nguyên dương; mặc định 3."}
       required: [query]
 
