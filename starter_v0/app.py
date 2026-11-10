@@ -16,6 +16,7 @@ load_lab_env(ROOT)
 st.markdown("""<style>
 .stApp {background: #f7f8fc;}
 .block-container {max-width: 1180px; padding-top: 4rem;}
+[data-testid="stBottomBlockContainer"] {padding-bottom: .75rem !important;}
 [data-testid="stSidebar"] {background: #eef1f8;}
 [data-testid="stChatMessage"] {border: 1px solid #e3e8f1; border-radius: 16px; background: white;}
 .eyebrow {color: #5367b2; font-size: .75rem; font-weight: 700; letter-spacing: .18em; margin-bottom: .4rem;}
@@ -30,10 +31,6 @@ def persist() -> None:
         st.session_state.save_error = None
     except OSError as exc:
         st.session_state.save_error = redact(str(exc))
-
-
-def queue_example(text: str) -> None:
-    st.session_state.example = text
 
 
 with st.sidebar:
@@ -62,7 +59,6 @@ with st.sidebar:
             st.session_state.research = new_session(provider_name, model.strip() or default_model,
                 version.strip() or "ui-preview", ROOT / "artifacts" / selected_prompt,
                 ROOT / "artifacts" / selected_tools, rounds, history_window)
-            st.session_state.pop("example", None)
             st.session_state.save_error = None
         except Exception as exc:
             st.error(redact(str(exc)))
@@ -79,13 +75,20 @@ with st.sidebar:
     st.download_button("↓ Tải transcript JSON", transcript_json(session),
         file_name=f"{session['transcript_id']}.transcript.json", mime="application/json", width="stretch")
 
+if "chat_started" not in st.session_state:
+    st.session_state.chat_started = bool(session["turns"])
+chat_input_position = "sticky" if st.session_state.chat_started else "static"
+st.markdown(f"""<style>
+[data-testid="stBottom"] {{position: {chat_input_position} !important; bottom: 0;}}
+</style>""", unsafe_allow_html=True)
+
 st.markdown('<div class="eyebrow">RESEARCH WORKSPACE / NGAMY</div><div class="hero">Từ câu hỏi đến nguồn tin.</div><div class="subtitle">Tra cứu, kiểm chứng và tổng hợp — cùng một nơi để cả nhóm thử agent.</div>', unsafe_allow_html=True)
 top = st.columns(3)
 top[0].metric("Model đang dùng", session["model"])
 top[1].metric("Tool sẵn sàng", len(session["declarations_snapshot"]))
 top[2].metric("Lượt hội thoại", len(session["turns"]))
 st.caption(f"Phiên: {session['version']} · {session['provider']} · Prompt: {session['system_prompt']} · Tools: {session['tools']}")
-chat_tab, tools_tab, evidence_tab = st.tabs(["Hội thoại", "Công cụ & cấu hình", "Bằng chứng phiên"])
+chat_tab, tools_tab, evidence_tab = st.tabs(["Chat", "Công cụ & cấu hình", "Lịch sử chat"])
 
 with tools_tab:
     st.subheader("Bộ công cụ của phiên này")
@@ -104,7 +107,7 @@ with tools_tab:
         st.code(session["prompt_snapshot"], language="markdown")
 
 with evidence_tab:
-    st.subheader("Theo dõi để kiểm thử và viết báo cáo")
+    st.subheader("Lịch sử chat")
     st.info("UI dùng vòng chat nhiều bước và có nút xác nhận hành động. Transcript UI không thay thế run_eval.py hoặc yêu cầu chạy chat.py trong đề.")
     st.code(session["artifact_version"], language=None)
     st.caption("Prompt/declaration được chụp lại khi tạo phiên để các lượt dùng cùng cấu hình.")
@@ -114,16 +117,11 @@ with evidence_tab:
                        "Số tool": len(t["tool_events"]), "Giây": t.get("duration_seconds", 0)} for t in session["turns"]],
                      width="stretch", hide_index=True)
     else:
-        st.caption("Gửi câu hỏi đầu tiên để bắt đầu ghi bằng chứng.")
+        st.caption("Lịch sử phiên chat sẽ được lưu lại ở đây.")
 
 with chat_tab:
     if not session["turns"]:
         st.subheader("Bạn muốn tìm hiểu điều gì?")
-        examples = [("🌐 Tin tức", "Tìm 3 tin mới về AI trong tuần qua, tóm tắt kèm nguồn."),
-                    ("📄 Đọc một trang", "Đọc https://example.com và tóm tắt nội dung."),
-                    ("💬 Bài đăng", "Lấy 3 bài đăng mới nhất của tài khoản @sama.")]
-        for column, (label, query) in zip(st.columns(3), examples):
-            column.button(label, on_click=queue_example, args=(query,), width="stretch")
         st.caption("Thử thêm: “Đọc bài này giúp mình” để kiểm tra hỏi lại, hoặc yêu cầu soạn bản tin để kiểm tra format.")
     for turn in session["turns"]:
         with st.chat_message("user"):
@@ -164,10 +162,11 @@ with chat_tab:
                 st.rerun()
     if st.session_state.get("save_error"):
         st.error("Chưa lưu được transcript: " + st.session_state.save_error + ". Hãy tải JSON từ thanh bên.")
-    user_text = st.chat_input("Hỏi về tin tức, gửi URL hoặc tiếp tục câu hỏi…", disabled=bool(session.get("pending")), max_chars=12000)
-    query = user_text or st.session_state.pop("example", None)
-    if query:
-        with st.spinner("Đang tìm nguồn và xử lý yêu cầu…"):
-            run_turn(session, query, make_provider(session["provider"]))
-            persist()
-        st.rerun()
+
+user_text = st.chat_input("Hỏi về tin tức, gửi URL hoặc tiếp tục câu hỏi…", disabled=bool(session.get("pending")), max_chars=12000)
+if user_text:
+    st.session_state.chat_started = True
+    with st.spinner("Đang tìm nguồn và xử lý yêu cầu…"):
+        run_turn(session, user_text, make_provider(session["provider"]))
+        persist()
+    st.rerun()
