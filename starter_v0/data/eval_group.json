@@ -3,5 +3,95 @@
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": 
+  [
+  {
+    "id": "G01_user_tweets_other_person",
+    "phase": "B", "suite": "group",
+    "query": "Gần đây Satya Nadella đăng gì trên Twitter?",
+    "failure_type": "wrong_tool",
+    "expect": {"tool_calls": [{"name": "timeline", "args": {"screenname": "satyanadella"}}]},
+    "metadata": {"skill": "routing_user_tweets_name_to_handle", "difficulty": "medium", "what_it_tests": "Tin CỦA một người cụ thể (Satya Nadella) → timeline với handle satyanadella, không dùng social_search."}
+  },
+  {
+    "id": "G02_topic_search_latest",
+    "phase": "B", "suite": "group",
+    "query": "Cho mình xem các tweet mới nhất về Claude",
+    "failure_type": "wrong_arg_value",
+    "expect": {"tool_calls": [{"name": "social_search", "args": {"query": "Claude", "search_type": "Latest"}}]},
+    "metadata": {"skill": "arg_search_type_latest", "difficulty": "medium", "what_it_tests": "'mới nhất' → search_type=Latest (đối lập với case Top trong base)."}
+  },
+  {
+    "id": "G03_news_month_timeframe",
+    "phase": "B", "suite": "group",
+    "query": "Tin tức về năng lượng tái tạo trong tháng này",
+    "failure_type": "wrong_arg_value",
+    "expect": {"tool_calls": [{"name": "lookup", "args": {"topic": "news", "timeframe": "month"}}]},
+    "metadata": {"skill": "arg_timeframe_month", "difficulty": "medium", "what_it_tests": "'tháng này' → timeframe=month (base mới test day và week)."}
+  },
+  {
+    "id": "G04_no_tool_greeting",
+    "phase": "B", "suite": "group",
+    "query": "Chào bạn, hôm nay bạn khỏe không?",
+    "failure_type": "unnecessary_tool",
+    "expect": {"no_tool": true, "behavior": "answer_without_tool"},
+    "metadata": {"skill": "no_tool_smalltalk", "difficulty": "easy", "what_it_tests": "Xã giao thông thường → trả lời thẳng, KHÔNG gọi tool."}
+  },
+  {
+    "id": "G05_wiki_definition_en",
+    "phase": "B", "suite": "group",
+    "query": "Cho mình đoạn tóm tắt Wikipedia tiếng Anh về Alan Turing",
+    "failure_type": "wrong_tool",
+    "expect": {"tool_calls": [{"name": "wiki", "args": {"title": "Alan Turing", "lang": "en"}}]},
+    "metadata": {"skill": "routing_new_tool_wiki", "difficulty": "medium", "what_it_tests": "Cần định nghĩa/bối cảnh nền từ Wikipedia → gọi wiki với title=Alan Turing, lang=en, không dùng lookup hay fetch."}
+  },
+  {
+    "id": "G06_missing_topic_news",
+    "phase": "B", "suite": "group",
+    "query": "Tìm giúp mình tin tức mới nhất",
+    "failure_type": "missing_info",
+    "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]},
+    "metadata": {"skill": "clarify_missing_topic", "difficulty": "medium", "what_it_tests": "Không nói chủ đề tin tức → clarify hỏi chủ đề, KHÔNG đoán bừa."}
+  },
+  {
+    "id": "G07_send_confirm_then_fill",
+    "phase": "B", "suite": "group",
+    "turns": [
+      {"role": "user", "content": "Gửi tóm tắt tin AI hôm nay lên Telegram giúp mình"},
+      {"role": "user", "content": "Ừ, nội dung là: AI hôm nay có nhiều bước tiến mới"},
+      {"role": "user", "content": "Bạn xác nhận lại với mình trước khi gửi nhé"}
+    ],
+    "failure_type": "wrong_boundary",
+    "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+    "metadata": {"skill": "multiturn_confirm_before_send", "difficulty": "hard", "what_it_tests": "Dù user đã cung cấp nội dung, hành động gửi vẫn phải xin xác nhận yes_no trước, không tự gửi."}
+  },
+  {
+    "id": "G08_correction_topic_search",
+    "phase": "B", "suite": "group",
+    "turns": [
+      {"role": "user", "content": "Tìm tweet về Bitcoin"},
+      {"role": "user", "content": "À nhầm, về Ethereum"},
+      {"role": "user", "content": "Lấy loại phổ biến nhất nhé"}
+    ],
+    "failure_type": "wrong_arg_value",
+    "expect": {"tool_calls": [{"name": "social_search", "args": {"query": "Ethereum", "search_type": "Top"}}]},
+    "metadata": {"skill": "multiturn_correction_topic", "difficulty": "hard", "what_it_tests": "3 turns: sửa Bitcoin→Ethereum, rồi thêm yêu cầu Top → query=Ethereum, search_type=Top."}
+  },
+  {
+  "id": "G09_hn_dev_community",
+  "phase": "B", "suite": "group",
+  "query": "Dân lập trình trên Hacker News đang bàn gì về Rust?",
+  "failure_type": "wrong_tool",
+  "expect": {"tool_calls": [{"name": "hn", "args": {"query": "Rust"}}]},
+  "metadata": {"skill": "routing_new_tool_hn", "difficulty": "medium", "what_it_tests": "Hỏi cộng đồng dev/tech bàn gì → gọi hn, không dùng social_search hay lookup."}
+ },
+  {
+  "id": "G10_hn_sort_date",
+  "phase": "B", "suite": "group",
+  "query": "Tìm các bài mới nhất trên Hacker News về WebAssembly",
+  "failure_type": "wrong_arg_value",
+  "expect": {"tool_calls": [{"name": "hn", "args": {"query": "WebAssembly", "sort": "date"}}]},
+  "metadata": {"skill": "arg_hn_sort_date", "difficulty": "medium", "what_it_tests": "'mới nhất' → sort=date (mặc định là relevance nên agent dễ bỏ sót)."}
+} 
+]
 }
