@@ -14,7 +14,6 @@
 - Baseline v0 và phân tích lỗi (C1).
 - `system_prompt.md` và các vòng tối ưu v1, v3, v4 (C2, C3).
 - Tổng hợp báo cáo nhóm: B1, B2, B3, B5, mục 3 (Giải pháp), mục 5 (Khó khăn), B6 (Reflection), mục 8.
-- Làm thay phần còn thiếu của P4: hoàn thiện eval nhóm 10 case, chạy `--suite group`, tìm bug và viết regression test.
 
 ## 3. Đóng góp cụ thể
 
