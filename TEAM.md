@@ -12,7 +12,7 @@
 
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
-|   1 |        |      |       |        |         |
+|   1 | Hoàng Thị Thanh Nga | 2A202604079 | hoangthanhnga2005@gmail.com | Ngahoang2005 | P1 — Nhóm trưởng + System prompt; baseline v0, v1, v3, v4; C1, C2, C3, tổng hợp báo cáo nhóm |
 |   2 | Dương Thị Huyền | 2A202604077 | Chưa bổ sung | Chưa bổ sung | P2 — Tool declaration + Local model; C2, C3 và bonus local theo phân công |
 
 ## Cá nhân
@@ -26,6 +26,31 @@ report/team/MSSV_HoTen.md
 Ví dụ: `report/team/20241234_NguyenVanAn.md`.
 
 Sao chép mục dưới đây cho từng thành viên.
+
+## Hoàng Thị Thanh Nga — 2A202604079
+
+### Phần việc phụ trách
+
+- Nhóm trưởng: tạo repo, chia việc, điều phối thứ tự v0 → v4, merge nhánh thành viên.
+- P1 — System prompt và vòng lặp tối ưu: baseline v0, v1 (prompt), v3 (`policy_area`), v4 (kiểm tra hồi quy sau khi thêm tool mới).
+- Tổng hợp báo cáo nhóm: B1, B2, mục 3, 5, B6, 8.
+
+### Đóng góp cụ thể
+
+- Cấu hình `.env` và provider; xử lý sự cố Gemini hết quota, chuyển toàn nhóm sang OpenAI `gpt-4o-mini`.
+- v0: chạy baseline hợp lệ (0.70), phân loại 6 case FAIL (bảng B2).
+- v1: viết lại `system_prompt.md`, bỏ 3 chỉ dẫn xấu → base 0.70 → 0.95.
+- v3: dùng bộ extension tìm lỗi khi base đã 1.00; sửa mô tả `policy_area` → extension 0.70 → 1.00; chạy lặp base để phát hiện R12 không ổn định.
+- v4: merge 4 tool mới của Phương (giữ nội dung v3 cho 10 tool cũ), chạy base kiểm tra hồi quy (1.00).
+- Thêm `.gitattributes` để hash prompt/tools giống nhau trên mọi máy.
+- Làm thay P4: hoàn thiện `eval_group.json` thành 5 + 5 (viết G03 `github`, G06 `hf`, G10 `hn`), chạy group v4 (10/10), điền B3.
+- Tìm bug `limit` âm trong `timeline`/`social_search`, viết 3 regression test, sửa code (`pytest` 126 passed, 0 skipped), điền B5.
+
+### Bằng chứng
+
+- [Báo cáo cá nhân — 2A202604079_HoangThiThanhNga.md](report/team/2A202604079_HoangThiThanhNga.md).
+- Run: [v0](starter_v0/runs/v0_B_base_openai_20261110T174407365229.json), [v1](starter_v0/runs/v1_B_base_openai_20261110T175638536349.json), v3 và v4 trong [`starter_v0/runs/`](starter_v0/runs/); dòng v0, v1, v3, v4 trong [version_log.csv](starter_v0/artifacts/version_log.csv).
+- Commit: `bcef58c` (v1), `16cec98` (v2 extension + v3), `021b286`/`00adea4` (v0 OpenAI).
 
 ## Dương Thị Huyền — 2A202604077
 

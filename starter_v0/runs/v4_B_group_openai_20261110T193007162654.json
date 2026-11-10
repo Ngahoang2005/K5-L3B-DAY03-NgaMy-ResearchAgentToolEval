@@ -1,0 +1,977 @@
+{
+  "run_id": "v4_B_group_openai_20261110T193007162654",
+  "version": "v4",
+  "artifact_version": "v4+pea21801f0290+t85fc98b68764",
+  "prompt_hash": "ea21801f02907f2373ba84902152ee4bb640dafd43ba5f5fb6a9687f8570c932",
+  "tools_hash": "85fc98b687641d5bbaea3a5071bada6ce05a418869044b92eb53fe77bec1a2a6",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "system_prompt": "C:\\Users\\Admin\\OneDrive\\Documents\\GitHub\\K5-L3B-DAY03-NgaMy-ResearchAgentToolEval\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "C:\\Users\\Admin\\OneDrive\\Documents\\GitHub\\K5-L3B-DAY03-NgaMy-ResearchAgentToolEval\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day03_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T19:30:07",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 10,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_user_tweets_other_person",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_user_tweets_name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tin CỦA một người cụ thể (Satya Nadella) → timeline với handle satyanadella, không dùng social_search."
+      },
+      "input": "Gần đây Satya Nadella đăng gì trên Twitter?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "satyanadella"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "satyanadella"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "satyanadella"
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "satyanadella",
+            "items": [
+              {
+                "title": "RT @brijones: Finance teams help the business understand what's happening and decide what to do next. That takes experti",
+                "summary": "RT @brijones: Finance teams help the business understand what's happening and decide what to do next. That takes expertise, and a lot of ro…",
+                "url": "https://x.com/satyanadella/status/2115838593717731488",
+                "source": "@satyanadella",
+                "date": "Thu Oct 29 16:10:05 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 11,
+                  "views": "10597"
+                }
+              },
+              {
+                "title": "Just wrapped our earnings call. It was a fast start to our fiscal year.",
+                "summary": "Just wrapped our earnings call. It was a fast start to our fiscal year.\n\nMicrosoft Cloud revenue surpassed $63B, with growth accelerating to 30% YoY.\n\nLots of innovation as we build the new tech stack for the agentic wave. A few highlights:",
+                "url": "https://x.com/satyanadella/status/2115577764300693644",
+                "source": "@satyanadella",
+                "date": "Wed Oct 28 22:53:39 +0000 2026",
+                "metrics": {
+                  "favorites": 9303,
+                  "retweets": 585,
+                  "views": "1806491"
+                }
+              },
+              {
+                "title": "4/ When it comes to infrastructure, we have a fungible fleet that allows us to dynamically allocate capacity to the high",
+                "summary": "4/ When it comes to infrastructure, we have a fungible fleet that allows us to dynamically allocate capacity to the highest value opportunities across compute, data, Foundry, and Copilot.\n\nWe are bringing capacity online faster, and getting more from the infrastructure we already have.\n\nAzure growth was broad-based across enterprise and SMB, spanning both core cloud services and AI infra.\n\nI have never been more confident in the opportunity ahead of us.",
+                "url": "https://x.com/satyanadella/status/2115577772349518171",
+                "source": "@satyanadella",
+                "date": "Wed Oct 28 22:53:41 +0000 2026",
+                "metrics": {
+                  "favorites": 204,
+                  "retweets": 12,
+                  "views": "90006"
+                }
+              },
+              {
+                "title": "5/ Read more about our results here: https://t.co/g35iNp6jXE",
+                "summary": "5/ Read more about our results here: https://t.co/g35iNp6jXE",
+                "url": "https://x.com/satyanadella/status/2115577773981073451",
+                "source": "@satyanadella",
+                "date": "Wed Oct 28 22:53:41 +0000 2026",
+                "metrics": {
+                  "favorites": 153,
+                  "retweets": 8,
+                  "views": "84044"
+                }
+              },
+              {
+                "title": "RT @jeffhollan: Building powerful long running agents requires a powerful agent harness. Now it's easier than ever insid",
+                "summary": "RT @jeffhollan: Building powerful long running agents requires a powerful agent harness. Now it's easier than ever inside of @Microsoft Fou…",
+                "url": "https://x.com/satyanadella/status/2115500553610711109",
+                "source": "@satyanadella",
+                "date": "Wed Oct 28 17:46:50 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 29,
+                  "views": "10079"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_topic_search_latest",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type_latest",
+        "difficulty": "medium",
+        "what_it_tests": "'mới nhất' → search_type=Latest (đối lập với case Top trong base)."
+      },
+      "input": "Cho mình xem các tweet mới nhất về Claude",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Claude",
+              "search_type": "Latest"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Claude",
+              "search_type": "Latest"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "Claude",
+            "search_type": "Latest"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "Claude",
+            "search_type": "Latest",
+            "items": [
+              {
+                "title": "@ravikiran_dev7 Claude wrote the script aswell",
+                "summary": "@ravikiran_dev7 Claude wrote the script aswell",
+                "url": "https://x.com/gauraavvii/status/2120131764773614017",
+                "source": "@gauraavvii",
+                "date": "Tue Nov 10 12:29:37 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "Nobody edited this video.",
+                "summary": "Nobody edited this video.\n\nClaude Fable 5.2 wrote all 30 seconds as code: every frame, every letter, even the music.\n\nOne meeting goes into Reline. Notes, tasks, a deck, a drawing and answers come out.\n\nhttps://t.co/s3Mvejvbiu https://t.co/rVWrbI0cqu",
+                "url": "https://x.com/RelineAI/status/2120131731948753296",
+                "source": "@RelineAI",
+                "date": "Tue Nov 10 12:29:29 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "1"
+                }
+              },
+              {
+                "title": "claude内側に取り込むツールって利用規約とか良かったっけ？",
+                "summary": "claude内側に取り込むツールって利用規約とか良かったっけ？\n\nサブスクだと特になんか厳しかったか気がしたが？\n\n毎回ローカルにファイル置いてチャットで取りに行かせてたけど、動かす方法あったっけ -p？",
+                "url": "https://x.com/izu_mimi_izumi/status/2120131711510172073",
+                "source": "@izu_mimi_izumi",
+                "date": "Tue Nov 10 12:29:24 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "Anthropicが新モデル「Claude Fable 5.2」を発表しました（11/9、米国時間）。",
+                "summary": "Anthropicが新モデル「Claude Fable 5.2」を発表しました（11/9、米国時間）。\n\n・出力は5.1より最大30％速い\n・コーディング・推論・画像の理解が向上\n・無料プランは対象外\n\nProなどは11/16まで、週の利用枠の50％までFableを追加料金なしで使えます。",
+                "url": "https://x.com/AIswwi/status/2120131708809064847",
+                "source": "@AIswwi",
+                "date": "Tue Nov 10 12:29:24 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "1"
+                }
+              },
+              {
+                "title": "@dr_l_alexandre Jamais quitté Claude perso. J'ai du mal à aller chez Altman. Et je trouve que l'intégration et l'ingénio",
+                "summary": "@dr_l_alexandre Jamais quitté Claude perso. J'ai du mal à aller chez Altman. Et je trouve que l'intégration et l'ingéniosité sont chez Anthropic de façon globale, leurs ingés sont des cracks.",
+                "url": "https://x.com/kevfr16/status/2120131703083532544",
+                "source": "@kevfr16",
+                "date": "Tue Nov 10 12:29:22 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_no_tool_greeting",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "no_tool_smalltalk",
+        "difficulty": "easy",
+        "what_it_tests": "Xã giao thông thường → trả lời thẳng, KHÔNG gọi tool."
+      },
+      "input": "Chào bạn, hôm nay bạn khỏe không?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Chào bạn! Tôi không có cảm xúc, nhưng tôi luôn sẵn sàng giúp đỡ bạn. Bạn cần tìm kiếm thông tin gì hôm nay?",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G05_wiki_definition_en",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_new_tool_wiki",
+        "difficulty": "medium",
+        "what_it_tests": "Cần định nghĩa/bối cảnh nền từ Wikipedia → gọi wiki với title=Alan Turing, lang=en, không dùng lookup hay fetch."
+      },
+      "input": "Cho mình đoạn tóm tắt Wikipedia tiếng Anh về Alan Turing",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "wiki",
+            "args": {
+              "title": "Alan Turing",
+              "lang": "en"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "wiki",
+            "args": {
+              "title": "Alan Turing",
+              "lang": "en"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "wiki",
+          "args": {
+            "title": "Alan Turing",
+            "lang": "en"
+          },
+          "result": {
+            "tool": "wiki_summary",
+            "title": "Alan Turing",
+            "lang": "en",
+            "items": [
+              {
+                "title": "Alan Turing",
+                "url": "https://en.wikipedia.org/wiki/Alan_Turing",
+                "source": "en.wikipedia.org",
+                "summary": "Alan Mathison Turing was an English mathematician and logician widely regarded as the father of theoretical computer science. He formalised the concepts of algorithm and computation with the Turing machine, a model of a general-purpose computer, and his contributions to cryptanalysis helped the Allies of World War II decipher messages encrypted by the German Enigma machine. He also contributed the Turing test to philosophy of artificial intelligence and the Turing pattern concept to mathematical and theoretical biology.",
+                "description": "English computer scientist (1912–1954)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_hn_dev_community",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_new_tool_hn",
+        "difficulty": "medium",
+        "what_it_tests": "Hỏi cộng đồng dev/tech bàn gì → gọi hn, không dùng social_search hay lookup."
+      },
+      "input": "Dân lập trình trên Hacker News đang bàn gì về Rust?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hn",
+            "args": {
+              "query": "Rust"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "hn",
+            "args": {
+              "query": "Rust",
+              "sort": "relevance",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "hn",
+          "args": {
+            "query": "Rust",
+            "sort": "relevance",
+            "limit": 5
+          },
+          "result": {
+            "tool": "hn_search",
+            "query": "Rust",
+            "sort": "relevance",
+            "items": [
+              {
+                "title": "Why Discord is switching from Go to Rust",
+                "url": "https://blog.discordapp.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f",
+                "source": "blog.discordapp.com",
+                "hn_url": "https://news.ycombinator.com/item?id=22238335",
+                "points": 1582,
+                "num_comments": 642,
+                "created_at": "2020-02-04T17:30:40Z"
+              },
+              {
+                "title": "Leaving Rust gamedev after 3 years",
+                "url": "https://loglog.games/blog/leaving-rust-gamedev/",
+                "source": "loglog.games",
+                "hn_url": "https://news.ycombinator.com/item?id=40172033",
+                "points": 1484,
+                "num_comments": 972,
+                "created_at": "2024-04-26T17:33:56Z"
+              },
+              {
+                "title": "A half-hour to learn Rust",
+                "url": "https://fasterthanli.me/articles/a-half-hour-to-learn-rust",
+                "source": "fasterthanli.me",
+                "hn_url": "https://news.ycombinator.com/item?id=25610741",
+                "points": 1444,
+                "num_comments": 330,
+                "created_at": "2021-01-02T05:50:39Z"
+              },
+              {
+                "title": "Announcing Rust 1.0",
+                "url": "http://blog.rust-lang.org/2015/05/15/Rust-1.0.html",
+                "source": "blog.rust-lang.org",
+                "hn_url": "https://news.ycombinator.com/item?id=9551937",
+                "points": 1363,
+                "num_comments": 306,
+                "created_at": "2015-05-15T17:02:09Z"
+              },
+              {
+                "title": "CityBound – An open source city simulation game in Rust",
+                "url": "https://github.com/citybound/citybound",
+                "source": "github.com",
+                "hn_url": "https://news.ycombinator.com/item?id=19583384",
+                "points": 1340,
+                "num_comments": 264,
+                "created_at": "2019-04-05T15:18:45Z"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_send_confirm_then_fill",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_confirm_before_send",
+        "difficulty": "hard",
+        "what_it_tests": "Dù user đã cung cấp nội dung, hành động gửi vẫn phải xin xác nhận yes_no trước, không tự gửi."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Gửi tóm tắt tin AI hôm nay lên Telegram giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Ừ, nội dung là: AI hôm nay có nhiều bước tiến mới"
+        },
+        {
+          "role": "user",
+          "content": "Bạn xác nhận lại với mình trước khi gửi nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có xác nhận gửi nội dung 'AI hôm nay có nhiều bước tiến mới' lên Telegram không?",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có xác nhận gửi nội dung 'AI hôm nay có nhiều bước tiến mới' lên Telegram không?",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có xác nhận gửi nội dung 'AI hôm nay có nhiều bước tiến mới' lên Telegram không?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_correction_topic_search",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_correction_topic",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: sửa Bitcoin→Ethereum, rồi thêm yêu cầu Top → query=Ethereum, search_type=Top."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm tweet về Bitcoin"
+        },
+        {
+          "role": "user",
+          "content": "À nhầm, về Ethereum"
+        },
+        {
+          "role": "user",
+          "content": "Lấy loại phổ biến nhất nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Ethereum",
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Ethereum",
+              "search_type": "Top",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "Ethereum",
+            "search_type": "Top",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "Ethereum",
+            "search_type": "Top",
+            "items": [
+              {
+                "title": "$5,600,000,000 in $ETH shorts liquidation",
+                "summary": "$5,600,000,000 in $ETH shorts liquidation\n\n$570,000,000 in ETH longs liquidation\n\nNearly 10x difference, and this is very rare.\n\nWe saw the exact opposite of this when Ethereum was at $2,800 and it's down 26% since then. https://t.co/RXTGCFXcWy",
+                "url": "https://x.com/TedPillows/status/2120114747357925530",
+                "source": "@TedPillows",
+                "date": "Tue Nov 10 11:22:00 +0000 2026",
+                "metrics": {
+                  "favorites": 314,
+                  "retweets": 34,
+                  "views": "23159"
+                }
+              },
+              {
+                "title": "📈 Ethereum is busier than ever. 2.16 million transactions every day, and counting.",
+                "summary": "📈 Ethereum is busier than ever. 2.16 million transactions every day, and counting.\n\nEthereum mainnet has set a new record in 2026, averaging 2.16M daily transactions as of November 4, according to PANews.\n\n📊 2026 vs. 2025:\nDaily transactions: 2.16M, up 51% from 1.44M.\nDaily active addresses: 899K, up ~36% from 662K.\nBoth metrics have reached new all-time highs.\nMarket angle: Network activity is accelerating, suggesting stronger on-chain usage. However, higher transaction counts don't automatically translate into higher ETH prices or network fees.\n\nEthereum's blockchain is getting busier. ETH holders are still waiting for the price to catch up. 😂\n\nIs this the start of another major Ethereum adoption cycle?",
+                "url": "https://x.com/Brainrot_Labs/status/2119822572736876749",
+                "source": "@Brainrot_Labs",
+                "date": "Mon Nov 09 16:01:00 +0000 2026",
+                "metrics": {
+                  "favorites": 25,
+                  "retweets": 2,
+                  "views": "663"
+                }
+              },
+              {
+                "title": "🚨 ETHEREUM LIQUIDATION ALERT 🚨",
+                "summary": "🚨 ETHEREUM LIQUIDATION ALERT 🚨\n\n$4,500,000,000 in SHORTS could be liquidated if $ETH pumps above $2,450 while $650,000,000 in LONGS could be liquidated if it drops below $1,850.\n\nSHORT SQUEEZE looks inevitable right now, as there's 7x more liquidity upside. 🔥 https://t.co/zEvV3TSiNY",
+                "url": "https://x.com/TheMoneyApe/status/2120093335868379513",
+                "source": "@TheMoneyApe",
+                "date": "Tue Nov 10 09:56:55 +0000 2026",
+                "metrics": {
+                  "favorites": 62,
+                  "retweets": 11,
+                  "views": "5889"
+                }
+              },
+              {
+                "title": "Quantum computing poses a serious threat to the cryptography blockchains currently rely on, while advances in AI compres",
+                "summary": "Quantum computing poses a serious threat to the cryptography blockchains currently rely on, while advances in AI compress best estimates for the threat's timeline.\n\nThat's why experts gathered in Cambridge to coordinate research upgrading our cryptography to be quantum-resistant. https://t.co/VHGbEO3l7p",
+                "url": "https://x.com/ethereum/status/2116576765506437319",
+                "source": "@ethereum",
+                "date": "Sat Oct 31 17:03:19 +0000 2026",
+                "metrics": {
+                  "favorites": 3800,
+                  "retweets": 685,
+                  "views": "368685"
+                }
+              },
+              {
+                "title": "🚨 BREAKING",
+                "summary": "🚨 BREAKING\n\n🇺🇸 BLACKROCK JUST STARTED LIQUIDATING ALL BITCOIN HOLDINGS RIGHT AFTER THE U.S. MARKET OPENED!\n\nTHEY’VE JUST DUMPED $480 MILLION IN BITCOIN AND ETHEREUM AND KEEP SELLING EVEN MORE RIGHT NOW, NONSTOP.\n\nTHEY DEFINITELY KNOW CRYPTO WILL COLLAPSE THIS WEEK… https://t.co/uL0W2GYSm7",
+                "url": "https://x.com/CryptoNobler/status/2119827613405364515",
+                "source": "@CryptoNobler",
+                "date": "Mon Nov 09 16:21:02 +0000 2026",
+                "metrics": {
+                  "favorites": 317,
+                  "retweets": 89,
+                  "views": "43007"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_github_lang_then_sort",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_new_tool_github",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: tìm thư viện/code → github (không phải lookup/papers); cộng dồn ràng buộc language=python (lượt 2) và sort=updated (lượt 3)."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mình cần một thư viện mã nguồn mở để xây AI agent"
+        },
+        {
+          "role": "user",
+          "content": "Viết bằng Python nhé"
+        },
+        {
+          "role": "user",
+          "content": "Ưu tiên repo mới cập nhật gần đây"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "github",
+            "args": {
+              "language": "python",
+              "sort": "updated"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "github",
+            "args": {
+              "query": "AI agent",
+              "sort": "updated",
+              "language": "python",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "github",
+          "args": {
+            "query": "AI agent",
+            "sort": "updated",
+            "language": "python",
+            "limit": 5
+          },
+          "result": {
+            "tool": "github_repo_search",
+            "query": "AI agent",
+            "sort": "updated",
+            "items": [
+              {
+                "title": "Henrique1601/SkiilsToIAs",
+                "url": "https://github.com/Henrique1601/SkiilsToIAs",
+                "source": "github.com",
+                "summary": "⚡ Sistema Operacional de Engenharia para Agentes Autônomos de IA: 15 Agentes Especialistas em Rede Full-Mesh, 685 Skills e 26 Servidores MCP (Antigravity, Claude Code, Cursor, DevSync)",
+                "stars": 0,
+                "language": "Python",
+                "updated_at": "2026-11-10T12:29:57Z"
+              },
+              {
+                "title": "Wiolic/XAFSmith",
+                "url": "https://github.com/Wiolic/XAFSmith",
+                "source": "github.com",
+                "summary": "可连接 AI 助手（agent）的同步辐射 XAFS 分析软件",
+                "stars": 1,
+                "language": "Python",
+                "updated_at": "2026-11-10T12:29:55Z"
+              },
+              {
+                "title": "PostHog/posthog",
+                "url": "https://github.com/PostHog/posthog",
+                "source": "github.com",
+                "summary": ":hedgehog: PostHog is the leading platform for building self-driving products. Our developer tools – AI observability, analytics, session replay, flags, experiments, error tracking, logs, and more – capture all the context agents need to diagnose problems, uncover opportunities, and ship fixes. Stee",
+                "stars": 40727,
+                "language": "Python",
+                "updated_at": "2026-11-10T12:29:59Z"
+              },
+              {
+                "title": "vishal189asthana-cmyk/multi_agent_ai",
+                "url": "https://github.com/vishal189asthana-cmyk/multi_agent_ai",
+                "source": "github.com",
+                "summary": "",
+                "stars": 0,
+                "language": "Python",
+                "updated_at": "2026-11-10T12:29:45Z"
+              },
+              {
+                "title": "DineshReddy2624/Explainable-Multi-Agent-AI-Framework-",
+                "url": "https://github.com/DineshReddy2624/Explainable-Multi-Agent-AI-Framework-",
+                "source": "github.com",
+                "summary": "",
+                "stars": 0,
+                "language": "Python",
+                "updated_at": "2026-11-10T12:29:44Z"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G06_hf_clarify_then_fill",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_new_tool_hf",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: yêu cầu model ban đầu còn mơ hồ, user bổ sung dần → route tới hf (model đã train, không phải github) với sort=likes."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm giúp mình một model AI"
+        },
+        {
+          "role": "user",
+          "content": "Model embedding cho tiếng Việt"
+        },
+        {
+          "role": "user",
+          "content": "Lấy model có nhiều like nhất"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hf",
+            "args": {
+              "sort": "likes"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "hf",
+            "args": {
+              "query": "embedding tiếng Việt",
+              "sort": "likes"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "hf",
+          "args": {
+            "query": "embedding tiếng Việt",
+            "sort": "likes"
+          },
+          "result": {
+            "tool": "hf_model_search",
+            "query": "embedding tiếng Việt",
+            "sort": "likes",
+            "items": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "G10_hn_followup_sort_date",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_new_tool_hn_sort",
+        "difficulty": "hard",
+        "what_it_tests": "2 turns: giữ query=WebAssembly từ lượt 1, lượt 2 đổi thứ tự → sort=date (mặc định relevance nên agent dễ bỏ sót)."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm bài thảo luận về WebAssembly trên Hacker News"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ lấy các bài mới nhất thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hn",
+            "args": {
+              "query": "WebAssembly",
+              "sort": "date"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "hn",
+            "args": {
+              "query": "WebAssembly",
+              "sort": "date",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "hn",
+          "args": {
+            "query": "WebAssembly",
+            "sort": "date",
+            "limit": 5
+          },
+          "result": {
+            "tool": "hn_search",
+            "query": "WebAssembly",
+            "sort": "date",
+            "items": [
+              {
+                "title": "Show HN: Graphviz Dot in Go (CLI, Lib and WebAssembly)",
+                "url": "https://github.com/ekalinin/gogv",
+                "source": "github.com",
+                "hn_url": "https://news.ycombinator.com/item?id=50396914",
+                "points": 1,
+                "num_comments": 0,
+                "created_at": "2026-11-06T19:12:14Z"
+              },
+              {
+                "title": "PlantUML in Go: CLI, Library, HTTP Server and WebAssembly",
+                "url": "https://github.com/ekalinin/gopuml",
+                "source": "github.com",
+                "hn_url": "https://news.ycombinator.com/item?id=50396775",
+                "points": 2,
+                "num_comments": 0,
+                "created_at": "2026-11-06T19:01:41Z"
+              },
+              {
+                "title": "WebAssembly Specification Release 3.0 (2026-11-04)",
+                "url": "https://webassembly.github.io/spec/core/",
+                "source": "webassembly.github.io",
+                "hn_url": "https://news.ycombinator.com/item?id=50394278",
+                "points": 24,
+                "num_comments": 3,
+                "created_at": "2026-11-06T16:13:46Z"
+              },
+              {
+                "title": "Running untrusted JavaScript inside Elixir with WebAssembly",
+                "url": "https://amanitaproject.com/posts/2026-06-14-running-untrusted-javascript-inside-elixir-with-webassembly/",
+                "source": "amanitaproject.com",
+                "hn_url": "https://news.ycombinator.com/item?id=50389087",
+                "points": 2,
+                "num_comments": 1,
+                "created_at": "2026-11-06T07:02:20Z"
+              },
+              {
+                "title": "Show HN: MakeWorks 98 – a game in a desktop simulation",
+                "url": "https://makeworks98.com/",
+                "source": "makeworks98.com",
+                "hn_url": "https://news.ycombinator.com/item?id=50378506",
+                "points": 1,
+                "num_comments": 0,
+                "created_at": "2026-11-05T12:51:37Z"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
