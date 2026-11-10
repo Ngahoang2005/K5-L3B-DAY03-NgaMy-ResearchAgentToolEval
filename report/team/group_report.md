@@ -23,39 +23,43 @@ NgaMy Research giúp tìm tin web và bài đăng, đọc URL/paper, tra chính 
 
 **Cách chạy UI:**
 
-Từ `starter_v0/`: `.\.venv\Scripts\python.exe -m streamlit run app.py`. Đã thêm Streamlit và jsonschema vào `requirements.txt`. Hướng dẫn: [UI-GUIDE.md](../../docs/UI-GUIDE.md).
+Từ `starter_v0/`, cài dependencies bằng `python -m pip install -r requirements.txt`, sau đó chạy `python -m streamlit run app.py`. UI dùng Streamlit; hướng dẫn đầy đủ: [UI-GUIDE.md](../../docs/UI-GUIDE.md).
 
 **Link dùng thử (deploy):**
 
-> Dán link public để team khác mở thử ngay. Cách deploy nhanh bằng Cloudflare Tunnel xem README. Nếu deploy Vercel/Streamlit Cloud thì dán link đó.
->
-> URL cục bộ: http://127.0.0.1:8501. Chưa triển khai link public; P5/nhóm cần bổ sung link dùng thử để hoàn tất CP5.
+**Link demo hiện tại:** https://lottery-showed-note-bus.trycloudflare.com (đã kiểm tra health HTTP 200). Đây là Cloudflare Quick Tunnel tạm thời, không phải deployment cố định; chỉ hoạt động khi máy chủ Streamlit và tiến trình tunnel còn chạy. Nếu link hết hạn, chạy lại `cloudflared tunnel --url http://127.0.0.1:8501` và thay URL tại đây. Tunnel không có đăng nhập; chỉ chia sẻ với người tin cậy vì các yêu cầu dùng quota API của máy chủ.
 
 ### A2. Tool agent có
 
 > Liệt kê các tool agent đang dùng (gồm tool mới nhóm tự thêm). Mỗi tool 1 dòng: tên + làm được gì.
 
-| Tên tool                 | Làm được gì                                      | Tool mới nhóm thêm? |
-| ------------------------ | ------------------------------------------------ | ------------------- |
-| clarify                  | hỏi lại người dùng khi thiếu thông tin           | không               |
-| timeline / social_search | lấy bài một tài khoản / tìm bài theo từ khóa     | không               |
-| lookup / fetch           | tìm nguồn web / đọc URL                          | không               |
-| format                   | định dạng dữ liệu đã có thành digest             | không               |
-| policy                   | tra chính sách nội bộ                            | không               |
-| papers / paper_text      | tìm arXiv / đọc trích đoạn paper                 | không               |
-| send                     | gửi Telegram sau xác nhận; cần cấu hình Telegram | không               |
+| Tên tool | Làm được gì | Tool mới nhóm thêm? |
+|---|---|---|
+| `clarify` | Hỏi lại khi thiếu thông tin; xin xác nhận trước hành động gửi/đăng. | không |
+| `timeline` / `social_search` | Lấy bài từ tài khoản X đã biết / tìm bài X theo chủ đề. | không |
+| `lookup` / `fetch` | Tìm web/tin tức / đọc URL đã biết. | không |
+| `format` | Định dạng các kết quả đã có thành bản tin/digest có nguồn. | không |
+| `policy` | Tra cứu chính sách nội bộ theo chủ đề. | không |
+| `papers` / `paper_text` | Tìm paper arXiv / đọc nội dung paper theo ID hoặc URL. | không |
+| `send` | Gửi digest lên Telegram sau khi người dùng xác nhận; cần cấu hình Telegram. | không |
+| `wiki` | Lấy tóm tắt Wikipedia tiếng Việt hoặc tiếng Anh để tra khái niệm/bối cảnh. | có |
+| `hn` | Tìm story Hacker News theo chủ đề, mức liên quan hoặc thời gian. | có |
+| `github` | Tìm repository mã nguồn mở, có thể lọc ngôn ngữ và mức phổ biến/cập nhật. | có |
+| `hf` | Tìm model AI trên Hugging Face theo từ khóa, tác vụ hoặc độ phổ biến. | có |
 
-UI đọc danh sách động từ declaration; cập nhật bảng này khi nhóm bổ sung tool mới.
+Tổng cộng 14 tool; UI hiển thị danh sách từ declaration của phiên. Bốn tool mới được đăng ký trong `starter_v0/tools/` và khai báo trong `starter_v0/artifacts/tools.yaml`.
 
 ### A3. Câu hỏi mẫu để thử
 
 > 3–5 câu hỏi/yêu cầu mẫu để team khác tự thử agent ngay.
 
-1. Tìm 3 tin mới về AI trong tuần qua, tóm tắt kèm nguồn.
-2. Lấy 3 bài đăng mới nhất của tài khoản @sama.
-3. Đọc https://example.com và tóm tắt nội dung.
-4. Đọc bài này giúp mình. (Sau đó bổ sung URL để thử hội thoại nhiều lượt.)
-5. Soạn bản tin từ kết quả vừa tìm; yêu cầu gửi Telegram để kiểm tra xác nhận/hủy.
+1. **Yêu cầu thông thường:** “Tìm 3 tin mới về AI trong tuần qua, tóm tắt kèm nguồn.”
+2. **Tìm bài đăng:** “Lấy 3 bài đăng mới nhất của tài khoản @sama.”
+3. **Thiếu thông tin rồi bổ sung:** “Đọc bài này giúp mình.” Khi agent hỏi URL, gửi tiếp `https://example.com`.
+4. **Tổng hợp:** “Tìm 3 bài về AI trên Hacker News và định dạng thành bản tin có nguồn.”
+5. **Gửi có xác nhận:** “Soạn bản tin từ kết quả vừa tìm rồi gửi lên Telegram.” Kiểm tra bản nháp và đích; chỉ xác nhận nếu muốn gửi thật. Cần cấu hình Telegram.
+
+Ba tình huống đầu cũng phù hợp làm kịch bản chạy `chat.py`; transcript UI không thay cho bằng chứng chạy CLI nếu đề yêu cầu `chat.py`.
 
 ## 3. Giải pháp
 
