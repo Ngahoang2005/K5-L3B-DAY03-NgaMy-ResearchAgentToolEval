@@ -149,7 +149,7 @@ tools:
                 tool_usage,
               ],
             default: "all",
-            description: "Nhóm",
+            description: "Luôn truyền tham số này. Chọn đúng MỘT vùng theo chủ đề câu hỏi: source_citation = độ tin cậy/xác minh nguồn, cái gì được coi là fact, trích dẫn, dùng tweet/mạng xã hội/arXiv làm nguồn; ai_research = quy trình/workflow nghiên cứu AI, cách làm research; data_privacy = API key, secret, dữ liệu cá nhân/khách hàng; external_publishing = đăng/xuất bản ra ngoài (Telegram, blog, mạng xã hội), phê duyệt trước khi đăng; tool_usage = quy định dùng tool/agent. Chỉ dùng all khi câu hỏi thật sự thuộc nhiều vùng cùng lúc, không dùng all chỉ vì chưa chắc.",
           }
         top_k: { type: integer, default: 3, description: "Số mục" }
       required: [query]
@@ -227,10 +227,27 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Từ khóa tiếng Anh, ví dụ 'llm agent framework' hoặc 'vietnamese tokenizer'"}
-        sort: {type: string, enum: [stars, updated], default: "stars", description: "stars = nhiều sao nhất, updated = mới cập nhật gần đây"}
-        language: {type: string, default: "", description: "Lọc theo ngôn ngữ lập trình, ví dụ 'python'. Để trống nếu không cần lọc."}
-        limit: {type: integer, default: 5, description: "Số repo trả về, 1-20"}
+        query:
+          {
+            type: string,
+            default: "",
+            description: "Từ khóa tiếng Anh, ví dụ 'llm agent framework' hoặc 'vietnamese tokenizer'",
+          }
+        sort:
+          {
+            type: string,
+            enum: [stars, updated],
+            default: "stars",
+            description: "stars = nhiều sao nhất, updated = mới cập nhật gần đây",
+          }
+        language:
+          {
+            type: string,
+            default: "",
+            description: "Lọc theo ngôn ngữ lập trình, ví dụ 'python'. Để trống nếu không cần lọc.",
+          }
+        limit:
+          { type: integer, default: 5, description: "Số repo trả về, 1-20" }
       required: [query]
 
   - name: hf
@@ -238,8 +255,25 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Tên hoặc từ khóa model, ví dụ 'qwen', 'vietnamese embedding'"}
-        sort: {type: string, enum: [downloads, likes, recent], default: "downloads", description: "downloads = nhiều lượt tải nhất, likes = nhiều like nhất, recent = mới cập nhật"}
-        task: {type: string, default: "", description: "Pipeline tag tuỳ chọn, ví dụ 'text-generation', 'automatic-speech-recognition'. Để trống nếu không cần lọc."}
-        limit: {type: integer, default: 5, description: "Số model trả về, 1-20"}
+        query:
+          {
+            type: string,
+            default: "",
+            description: "Tên hoặc từ khóa model, ví dụ 'qwen', 'vietnamese embedding'",
+          }
+        sort:
+          {
+            type: string,
+            enum: [downloads, likes, recent],
+            default: "downloads",
+            description: "downloads = nhiều lượt tải nhất, likes = nhiều like nhất, recent = mới cập nhật",
+          }
+        task:
+          {
+            type: string,
+            default: "",
+            description: "Pipeline tag tuỳ chọn, ví dụ 'text-generation', 'automatic-speech-recognition'. Để trống nếu không cần lọc.",
+          }
+        limit:
+          { type: integer, default: 5, description: "Số model trả về, 1-20" }
       required: [query]
