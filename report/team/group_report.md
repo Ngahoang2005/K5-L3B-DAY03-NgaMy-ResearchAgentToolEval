@@ -166,9 +166,16 @@ Bảng tổng hợp 10 eval cases trong `starter_v0/data/eval_group.json` (5 sin
 
 Lấy từ `starter_v0/transcripts/*.transcript.json`.
 
+Bằng chứng trích xuất từ file transcript phiên chạy trực tiếp (`starter_v0/transcripts/v3_openai_20261110T180412234223.transcript.json`):
+
 | Turn | User Request | Tool Calls | Version Evidence | Outcome |
-| ---- | ------------ | ---------- | ---------------- | ------- |
-|      |              |            |                  |         |
+|---|---|---|---|---|
+| **1** | Xin chào, hãy giới thiệu ngắn gọn bạn có thể giúp mình nghiên cứu những gì. | *(Không gọi tool)* `[]` | `v3` (`v3_openai_20261110T180412234223`) | **Success** (Trả lời xã giao/giới thiệu năng lực trực tiếp đúng quy tắc `no_tool`, không gọi tool thừa) |
+
+**Ghi chú chi tiết về phiên chạy:**
+- **Transcript ID:** `v3_openai_20261110T180412234223`
+- **Phiên bản (Version):** `v3` (OpenAI)
+- **Hành vi kiểm chứng:** Đối với yêu cầu xã giao/hỏi thông tin chung, Agent phản hồi trực tiếp (`assistant_text`) mà không thực hiện `tool_calls`, đáp ứng chuẩn xác tiêu chí đánh giá không tốn chi phí gọi tool vô ích.
 
 ### B5a. Required Evidence — Tool mới, unit test, UI
 
