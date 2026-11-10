@@ -15,9 +15,9 @@ Mở http://127.0.0.1:8501. Giữ terminal chạy trong khi dùng, Ctrl+C để 
 ## Dùng thử
 
 - Sidebar: chọn provider, model, nhãn phiên, file prompt và tool declaration; bấm **Áp dụng & tạo phiên mới**. Các lựa chọn chưa áp dụng không đổi cấu hình phiên đang dùng.
-- **Hội thoại:** nhập câu hỏi hoặc chọn câu hỏi mẫu; trả lời tiếp nếu agent hỏi lại. Mỗi phản hồi có trạng thái, thời gian và JSON args/kết quả tool để kiểm tra.
+- **Trò chuyện:** nhập câu hỏi; trả lời tiếp nếu agent hỏi lại. Ô nhập được cố định ở đáy màn hình và chỉ xuất hiện trong tab này; khi chuyển sang **Công cụ & cấu hình** hoặc **Lịch sử chat** thì ô nhập được ẩn.
 - **Công cụ & cấu hình:** xem toàn bộ tool của phiên, schema, metadata và biến môi trường còn thiếu. Không có giá trị key trong UI.
-- **Bằng chứng phiên:** xem artifact hash và các lượt; **Tải transcript JSON** trong sidebar để lấy bằng chứng. Server tự lưu sau mỗi lượt vào `starter_v0/transcripts/ui_<id>.transcript.json`.
+- **Lịch sử chat:** xem artifact hash và các lượt; **Tải transcript JSON** trong sidebar để lấy bằng chứng. Server tự lưu sau mỗi lượt vào `starter_v0/transcripts/ui_<id>.transcript.json`.
 - **Gửi/đăng:** UI dừng để xem bản nháp, đích Telegram và bấm xác nhận hoặc hủy. Khi thiếu Telegram token/chat ID, nút thực hiện bị khóa. Hủy không gọi mạng. Xác nhận được ghi thành một lượt riêng trong transcript.
 
 Ví dụ: “Tìm 3 tin AI trong tuần qua, kèm nguồn”; “Lấy 3 bài mới nhất của @sama”; “Đọc bài này giúp mình” rồi bổ sung URL; “Định dạng những kết quả vừa tìm thành bản tin”.

@@ -115,13 +115,24 @@ def test_streamlit_chat_and_new_session(monkeypatch, tmp_path):
     monkeypatch.setattr(ui, "save_session", lambda s: original_save(s, tmp_path))
     app = AppTest.from_file(str(ui.ROOT / "app.py"), default_timeout=20).run()
     assert not app.exception
-    assert app.session_state.chat_started is False
-    assert any("position: static" in element.value for element in app.markdown)
+    assert [tab.label for tab in app.tabs] == ["Trò chuyện", "Công cụ & cấu hình", "Lịch sử chat"]
+    assert any("position: fixed" in element.value for element in app.markdown)
     assert any(element.value == "Lịch sử phiên chat sẽ được lưu lại ở đây." for element in app.caption)
+    app.session_state["research_tabs"] = "Công cụ & cấu hình"
+    app.run()
+    assert not app.exception
+    assert not app.chat_input
+    app.session_state["research_tabs"] = "Lịch sử chat"
+    app.run()
+    assert not app.exception
+    assert not app.chat_input
+    app.session_state["research_tabs"] = "Trò chuyện"
+    app.run()
+    assert not app.exception
+    assert len(app.chat_input) == 1
     app.chat_input[0].set_value("Xin chào").run()
     assert not app.exception
-    assert app.session_state.chat_started is True
-    assert any("position: sticky" in element.value for element in app.markdown)
+    assert any("position: fixed" in element.value for element in app.markdown)
     assert len(app.session_state.research["turns"]) == 1
     assert app.session_state.research["turns"][0]["assistant_text"] == "Xin chào nhóm NgaMy!"
     assert len(list(tmp_path.glob("*.transcript.json"))) == 1
@@ -130,4 +141,4 @@ def test_streamlit_chat_and_new_session(monkeypatch, tmp_path):
     assert not app.exception
     assert app.session_state.research["turns"] == []
     assert app.session_state.research["transcript_id"] != old_id
-    assert app.session_state.chat_started is True
+    assert any("position: fixed" in element.value for element in app.markdown)

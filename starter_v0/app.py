@@ -15,8 +15,9 @@ load_lab_env(ROOT)
 
 st.markdown("""<style>
 .stApp {background: #f7f8fc;}
-.block-container {max-width: 1180px; padding-top: 4rem;}
+.block-container {max-width: 1180px; padding-top: 4rem; padding-bottom: 6rem;}
 [data-testid="stBottomBlockContainer"] {padding-bottom: .75rem !important;}
+[data-testid="stBottom"] {position: fixed !important; bottom: 0; z-index: 999;}
 [data-testid="stSidebar"] {background: #eef1f8;}
 [data-testid="stChatMessage"] {border: 1px solid #e3e8f1; border-radius: 16px; background: white;}
 .eyebrow {color: #5367b2; font-size: .75rem; font-weight: 700; letter-spacing: .18em; margin-bottom: .4rem;}
@@ -75,20 +76,17 @@ with st.sidebar:
     st.download_button("↓ Tải transcript JSON", transcript_json(session),
         file_name=f"{session['transcript_id']}.transcript.json", mime="application/json", width="stretch")
 
-if "chat_started" not in st.session_state:
-    st.session_state.chat_started = bool(session["turns"])
-chat_input_position = "sticky" if st.session_state.chat_started else "static"
-st.markdown(f"""<style>
-[data-testid="stBottom"] {{position: {chat_input_position} !important; bottom: 0;}}
-</style>""", unsafe_allow_html=True)
-
 st.markdown('<div class="eyebrow">RESEARCH WORKSPACE / NGAMY</div><div class="hero">Từ câu hỏi đến nguồn tin.</div><div class="subtitle">Tra cứu, kiểm chứng và tổng hợp — cùng một nơi để cả nhóm thử agent.</div>', unsafe_allow_html=True)
 top = st.columns(3)
 top[0].metric("Model đang dùng", session["model"])
 top[1].metric("Tool sẵn sàng", len(session["declarations_snapshot"]))
 top[2].metric("Lượt hội thoại", len(session["turns"]))
 st.caption(f"Phiên: {session['version']} · {session['provider']} · Prompt: {session['system_prompt']} · Tools: {session['tools']}")
-chat_tab, tools_tab, evidence_tab = st.tabs(["Chat", "Công cụ & cấu hình", "Lịch sử chat"])
+chat_tab, tools_tab, evidence_tab = st.tabs(
+    ["Trò chuyện", "Công cụ & cấu hình", "Lịch sử chat"],
+    key="research_tabs",
+    on_change="rerun",
+)
 
 with tools_tab:
     st.subheader("Bộ công cụ của phiên này")
@@ -136,37 +134,39 @@ with chat_tab:
                 failed = isinstance(result, dict) and bool(result.get("error"))
                 with st.expander(f"{'⚠' if failed else '↳'} {event['tool']} · kết quả {index}"):
                     st.json(event)
-    if session.get("pending"):
-        pending = session["pending"]
-        with st.container(border=True):
-            st.subheader("Xác nhận thao tác")
-            st.write(f"Tool: **{pending['name']}**")
-            if pending["name"] == "send":
-                st.write("Đích Telegram: " + (pending["destination"] or "Chưa cấu hình TELEGRAM_CHAT_ID"))
-                st.text(pending["args"].get("text", ""))
-            else:
-                st.json(redact(pending["args"]))
-            ready = pending["name"] != "send" or bool(os.getenv("TELEGRAM_BOT_TOKEN") and pending["destination"])
-            if not ready:
-                st.warning("Cần TELEGRAM_BOT_TOKEN và TELEGRAM_CHAT_ID để gửi thật. Bạn có thể hủy bản nháp này.")
-            yes, no = st.columns(2)
-            approved = yes.button("Xác nhận thực hiện", disabled=not ready, type="primary", width="stretch")
-            cancelled = no.button("Hủy thao tác", width="stretch")
-            if approved or cancelled:
-                try:
-                    with st.spinner("Đang xử lý…"):
-                        resolve_action(session, approved)
-                except Exception as exc:
-                    st.error(redact(str(exc)))
-                persist()
-                st.rerun()
-    if st.session_state.get("save_error"):
-        st.error("Chưa lưu được transcript: " + st.session_state.save_error + ". Hãy tải JSON từ thanh bên.")
+    if chat_tab.open:
+        if session.get("pending"):
+            pending = session["pending"]
+            with st.container(border=True):
+                st.subheader("Xác nhận thao tác")
+                st.write(f"Tool: **{pending['name']}**")
+                if pending["name"] == "send":
+                    st.write("Đích Telegram: " + (pending["destination"] or "Chưa cấu hình TELEGRAM_CHAT_ID"))
+                    st.text(pending["args"].get("text", ""))
+                else:
+                    st.json(redact(pending["args"]))
+                ready = pending["name"] != "send" or bool(os.getenv("TELEGRAM_BOT_TOKEN") and pending["destination"])
+                if not ready:
+                    st.warning("Cần TELEGRAM_BOT_TOKEN và TELEGRAM_CHAT_ID để gửi thật. Bạn có thể hủy bản nháp này.")
+                yes, no = st.columns(2)
+                approved = yes.button("Xác nhận thực hiện", disabled=not ready, type="primary", width="stretch")
+                cancelled = no.button("Hủy thao tác", width="stretch")
+                if approved or cancelled:
+                    try:
+                        with st.spinner("Đang xử lý…"):
+                            resolve_action(session, approved)
+                    except Exception as exc:
+                        st.error(redact(str(exc)))
+                    persist()
+                    st.rerun()
+        if st.session_state.get("save_error"):
+            st.error("Chưa lưu được transcript: " + st.session_state.save_error + ". Hãy tải JSON từ thanh bên.")
 
-user_text = st.chat_input("Hỏi về tin tức, gửi URL hoặc tiếp tục câu hỏi…", disabled=bool(session.get("pending")), max_chars=12000)
-if user_text:
-    st.session_state.chat_started = True
-    with st.spinner("Đang tìm nguồn và xử lý yêu cầu…"):
-        run_turn(session, user_text, make_provider(session["provider"]))
-        persist()
-    st.rerun()
+
+if chat_tab.open:
+    user_text = st.chat_input("Hỏi về tin tức, gửi URL hoặc tiếp tục câu hỏi…", disabled=bool(session.get("pending")), max_chars=12000)
+    if user_text:
+        with st.spinner("Đang tìm nguồn và xử lý yêu cầu…"):
+            run_turn(session, user_text, make_provider(session["provider"]))
+            persist()
+        st.rerun()
