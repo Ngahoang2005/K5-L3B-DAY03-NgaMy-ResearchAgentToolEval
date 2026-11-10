@@ -47,7 +47,8 @@ with st.sidebar:
     version = st.text_input("Nhãn phiên", value="ui-preview", help="Nhãn ghi vào transcript; không tự tạo một run eval v2.")
     prompts = sorted((ROOT / "artifacts").glob("*.md"))
     prompt_names = [p.name for p in prompts]
-    selected_prompt = st.selectbox("System prompt", prompt_names, index=prompt_names.index("system_prompt_ui.md") if "system_prompt_ui.md" in prompt_names else 0)
+    # Default to the measured project prompt (v1, used by v2 eval); system_prompt_ui.md stays selectable for demos.
+    selected_prompt = st.selectbox("System prompt", prompt_names, index=prompt_names.index("system_prompt.md") if "system_prompt.md" in prompt_names else 0)
     tool_paths = sorted((ROOT / "artifacts").glob("*.yaml"))
     tool_names = [p.name for p in tool_paths]
     selected_tools = st.selectbox("Tool declaration", tool_names, index=tool_names.index("tools.yaml") if "tools.yaml" in tool_names else 0)
