@@ -112,11 +112,14 @@ Mỗi thành viên có báo cáo riêng trong `report/team/MSSV_HoTen.md`. Mục
 ### Đóng góp cụ thể
 
 - Viết bộ case nhóm ban đầu G01–G10 theo schema của `eval_base.json`, mỗi case có `expect` và `metadata.what_it_tests`, gồm case route tới tool mới `wiki` và `hn`. Commit `845805e`, `58fc5a6`, `c21861e`.
-- Bộ ban đầu có 8 single-turn + 2 multi-turn; Nga chuyển thành 5 + 5 và bổ sung case cho `github`, `hf` (commit `e9b2f90`).
+- Phối hợp cùng nhóm trưởng  cấu trúc lại thành chuẩn 5 single-turn + 5 multi-turn, bổ sung case cho `github`, `hf` (commit `e9b2f90`).
+- Phối hợp kiểm thử và xác thực kết quả chạy nhóm v4 đạt `10/10 PASS` 
+
 
 ### Trạng thái
 
-- Báo cáo cá nhân [2A202604116_DangThuyDung.md](report/team/2A202604116_DangThuyDung.md): còn các ô `[...]` chưa điền (số case, run file, commit).
+- Báo cáo cá nhân [2A202604116_DangThuyDung.md](report/team/2A202604116_DangThuyDung.md):
+- Commit `845805e`, `58fc5a6`, `c21861e`.
 
 ## Phạm Minh Tâm — 2A202604097
 
