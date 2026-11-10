@@ -73,7 +73,7 @@ Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. 
 | ----------------- | ---------------- | ---------------------------------------------------------------- | -------------: | -----------: | ---------------------------------- |
 | v0                | baseline         | Đo hành vi của prompt + tools gốc starter trước khi sửa          |              — |  0.70 (14/20) | [`v0_B_base_openai_20261110T174407365229.json`](../../starter_v0/runs/v0_B_base_openai_20261110T174407365229.json) |
 | v1                | system_prompt.md | 5/6 case FAIL ở v0 (R08, R10, R11, R12, R14) do 3 chỉ dẫn xấu của starter (đoán thay vì hỏi, gửi không cần xác nhận, ép một tool). Thay bằng: thiếu thông tin thì `clarify`, gửi phải xác nhận, ngoài phạm vi thì trả lời text, cho phép nhiều tool | 0.70 | 0.95 (19/20) | [`v1_B_base_openai_20261110T175638536349.json`](../../starter_v0/runs/v1_B_base_openai_20261110T175638536349.json) |
-| v2 (P2, chờ chạy) | tools.yaml       | Làm rõ phạm vi tool/args, giữ prompt v1 để giảm lỗi routing/args | 0.95 (v1) |      Chưa đo | Chưa có; xem docs/HUYEN-HANDOFF.md |
+| v2                | tools.yaml       | Case FAIL duy nhất của v1 là R12 (`clarify` dạng `text` thay vì `yes_no`) vì declaration không nói ưu tiên xác nhận khi nội dung gửi còn mơ hồ. Giữ prompt v1, thay tool declaration: yêu cầu gửi/đăng luôn bắt đầu bằng `clarify` `yes_no`; `query` chỉ chứa từ khóa (tin tức dùng `topic=news`); mỗi tool nói khi nào dùng/không dùng | 0.95 | 1.00 (20/20) | [`v2_B_base_openai_20261110T180319042654.json`](../../starter_v0/runs/v2_B_base_openai_20261110T180319042654.json) |
 | v3                |                  |                                                                  |                |              |                                    |
 
 Tất cả run dùng provider `openai`, model `gpt-4o-mini`, bộ `data/eval_base.json` (20 case), `provider_error_cases == 0`, `measured_cases == 20`.
@@ -90,6 +90,21 @@ Tất cả run dùng provider `openai`, model `gpt-4o-mini`, bộ `data/eval_bas
 - Giả thuyết được xác nhận: R08, R10, R11, R14 chuyển từ FAIL sang PASS. Agent không còn đoán handle/URL mà gọi `clarify`, không còn gọi `send` cho câu toán/code.
 - R13 cũng chuyển sang PASS dù v1 không sửa quy ước tham số. Với prompt mới, `lookup` được gọi với `query="AI"`, `topic="news"`. Điều này cho thấy lỗi tham số ở v0 một phần do chỉ dẫn "làm một bước bằng phán đoán" chứ không chỉ do tool declaration.
 - Còn 1 case FAIL: **R12_confirm_before_send** (`wrong_boundary`). Agent đã không gửi ngay (cải thiện so với v0), nhưng gọi `clarify(question="Bạn muốn đăng nội dung gì lên Telegram?", response_type="text")` thay vì `response_type="yes_no"`. Nguyên nhân: user nói "bản tin này" mà không có nội dung, nên agent hỏi nội dung trước. Prompt v1 nói "hỏi xác nhận bằng `yes_no`" nhưng không nói rõ ưu tiên khi vừa thiếu nội dung vừa cần xác nhận. Ứng viên cho v2/v3: mô tả `send`/`clarify` hoặc rule trong prompt rằng yêu cầu gửi/đăng luôn bắt đầu bằng `clarify` dạng `yes_no`.
+
+**v1 → v2** (P2 — Huyền; `artifact_version` `v1+pea21801f0290+te69bc53ed884` → `v2+pea21801f0290+t64a6349a4b00`: prompt giữ nguyên hash, chỉ đổi tools từ `tools_baseline.yaml` sang `tools.yaml`):
+
+| Metric | v1 | v2 |
+|---|---:|---:|
+| `case_accuracy` | 0.95 | **1.00** |
+| `tool_routing_accuracy` | 1.00 | 1.00 |
+| `argument_accuracy` | 0.95 | **1.00** |
+| `multiturn_accuracy` | 1.00 | 1.00 |
+
+- Giả thuyết được xác nhận: **R12** chuyển FAIL → PASS. Agent gọi `clarify(response_type="yes_no")` thay vì `text`, và không gọi `send`.
+- Không có case nào PASS → FAIL. Các case từng sai args ở v0 vẫn đúng: R03/R13 gọi `lookup(query="AI", topic="news", timeframe="day")`, M02 gọi `lookup(query="robotics", topic="news", timeframe="day")`.
+- Hạn chế: ở R12, câu hỏi của agent vẫn là "Bạn muốn đăng nội dung gì lên Telegram?", một câu hỏi mở nhưng gắn `response_type="yes_no"`. Eval chỉ chấm `response_type` nên tính PASS; về hành vi thật, câu hỏi nên nêu nội dung cụ thể để người dùng trả lời có/không. Đây là ứng viên cho v3 (prompt), hoặc một case trong `eval_group.json` kiểm tra nội dung câu hỏi xác nhận.
+- Điểm base đã chạm trần 20/20, nên v3 khó đo cải thiện trên bộ base. Nên dùng bộ `eval_group.json` của nhóm để tìm lỗi mới.
+- Kỹ thuật: máy Huyền dùng `core.autocrlf=true` nên `system_prompt.md` bị đổi sang CRLF, hash khác v1 dù nội dung giống hệt. Đã đưa `system_prompt.md` và `tools.yaml` về LF (đúng bản trong Git) rồi chạy lại để `prompt_hash` khớp v1. Run đầu với CRLF cũng đạt 20/20 nhưng đã bỏ, không nộp.
 
 ### B2. Failure Analysis
 

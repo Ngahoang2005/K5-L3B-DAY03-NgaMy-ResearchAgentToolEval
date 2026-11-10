@@ -6,7 +6,7 @@
 - MSSV: 2A202604077.
 - Email: chưa bổ sung.
 - Vai trò: P2 — Tool declaration và Local model.
-- Trạng thái: đã sửa declaration và kiểm tra offline; v2 và bonus local chưa có run thật.
+- Trạng thái: đã hoàn thành declaration và v2 (run thật, 20/20); bonus local chưa có run thật.
 
 ## 2. Phần việc phụ trách
 
@@ -33,11 +33,17 @@ Phụ trách `starter_v0/artifacts/tools.yaml`: chức năng, khi nào dùng/kh�
 
 Đã lưu `tools_baseline.yaml` nguyên bản để P1 có thể chạy v0/v1 với declaration starter. Không sửa system prompt của P1 hay nội dung `eval_base.json`.
 
-### Giả thuyết và kế hoạch đo v2
+### v2: giả thuyết và kết quả
 
-Giả thuyết: làm rõ phạm vi tool và quy ước arguments sẽ giảm lỗi routing và args so với v1. Giữ nguyên prompt v1, provider/model và bộ case. Đây là một giả thuyết trên toàn bộ declaration; không quy kết mức cải thiện cho từng mô tả nếu chưa có thử nghiệm tách riêng.
+**Đầu vào:** run v1 của Nga (`openai / gpt-4o-mini`, 0.95, 19/20). Case FAIL duy nhất là R12: user nói "Đăng bản tin này lên Telegram", agent gọi `clarify(response_type="text")` hỏi nội dung, thay vì `yes_no` để xin xác nhận.
 
-Chưa có run v0/v1 và prompt v1 trong checkout. Prompt hiện tại vẫn là starter với chỉ dẫn cố ý sai. Chưa chạy v2, chưa ghi dòng v2 vào version_log, chưa có kết luận tăng điểm. Sau khi P1 bàn giao, so sánh case_accuracy, tool_routing_accuracy, argument_accuracy và multiturn_accuracy; đọc case thay đổi PASS/FAIL. Chỉ dùng run không có provider error và đo đủ case.
+**Giả thuyết:** declaration không nói rõ ưu tiên khi nội dung gửi còn mơ hồ. Bản nháp đầu còn ghi `clarify` dùng khi thiếu "nội dung cần gửi" và `text` "để bổ sung thông tin", nên dễ đẩy model về `text`. Nếu mô tả `clarify`/`send` bắt buộc yêu cầu gửi/đăng bắt đầu bằng `yes_no`, R12 sẽ PASS. Đồng thời sửa mô tả `query` của `lookup`/`social_search` thành "chỉ từ khóa" (bản nháp ghi "giữ ràng buộc của người dùng", có nguy cơ làm R13/M02 quay lại lỗi "AI news" / "robotics news" như v0).
+
+**Cách đo:** giữ nguyên prompt v1 (hash `ea21801f0290`, khớp run v1), cùng provider/model và `eval_base.json`, chỉ đổi `--tools artifacts/tools.yaml` (hash `64a6349a4b00`).
+
+**Kết quả** ([run v2](../../starter_v0/runs/v2_B_base_openai_20261110T180319042654.json)): 0 provider error, 20/20 case. case 0.95 → **1.00**, args 0.95 → **1.00**; routing và multiturn giữ 1.00. R12 FAIL → PASS, không case nào bị hỏng. R03, R13, M02 vẫn gọi `lookup(query="AI"|"robotics", topic="news")`.
+
+**Phân tích trung thực:** câu hỏi ở R12 vẫn là "Bạn muốn đăng nội dung gì lên Telegram?", một câu hỏi mở nhưng gắn `yes_no`; eval chỉ chấm `response_type` nên PASS. Đây là giới hạn của bộ chấm, đề xuất xử lý ở v3/eval nhóm. Bộ base đã đạt trần nên v3 nên dùng eval nhóm để đo tiếp.
 
 ### Setup và local model
 
@@ -52,11 +58,12 @@ Chưa có run v0/v1 và prompt v1 trong checkout. Prompt hiện tại vẫn là 
 - Declaration: [tools.yaml](../../starter_v0/artifacts/tools.yaml); bản gốc: [tools_baseline.yaml](../../starter_v0/artifacts/tools_baseline.yaml).
 - Kiểm tra thực tế: [p2-validation.md](evidence/p2-validation.md).
 - Hướng dẫn: [HUYEN-HANDOFF.md](../../docs/HUYEN-HANDOFF.md); trạng thái nhóm: B1 và B7 trong [group_report.md](group_report.md).
-- Commit/PR: chưa tạo; cần Huyền review và tạo commit kỹ thuật để ghi nhận đóng góp trong Git.
-- AI/công cụ đã dùng: Codex hỗ trợ đọc yêu cầu, đối chiếu implementation, sửa declaration và soạn báo cáo; Python/pytest kiểm tra contract và test hiện có. Kết quả: 62 passed, 17 skipped, 0 failed. Các skip là stub phần test của nhóm, không phải test P2 bị lỗi. Đây không phải điểm eval model.
+- Run v2: [v2_B_base_openai_20261110T180319042654.json](../../starter_v0/runs/v2_B_base_openai_20261110T180319042654.json); dòng v2 trong [version_log.csv](../../starter_v0/artifacts/version_log.csv); B1 trong [group_report.md](group_report.md).
+- Commit: `8c33caf` (declaration, UI, evidence) và commit v2 (tools.yaml, run v2, version_log, báo cáo).
+- AI/công cụ đã dùng: Codex và Claude Code hỗ trợ đọc yêu cầu, đối chiếu implementation, sửa declaration, chạy eval và soạn báo cáo. Tự kiểm tra bằng pytest (70 passed, 17 skipped, 0 failed; skip là stub test của nhóm), đối chiếu hash prompt/tools giữa run v1 và v2, và đọc `actual_tool_calls` từng case thay vì chỉ nhìn điểm tổng.
 
 ## 5. Tự đánh giá
 
-Đã hoàn thành phần declaration có thể làm độc lập. Test chứng minh tương thích contract hiện tại, không chứng minh chất lượng routing của model hoặc dữ liệu API. Prompt starter còn xung đột với quy tắc hỏi lại/xác nhận nên P1 cần sửa trước khi đo v2.
+Đã hoàn thành declaration và v2 với run thật hợp lệ. v2 sửa đúng case còn lại của v1 (R12) mà không làm hỏng case nào. Phần lớn cải thiện từ v0 đến v1 đến từ prompt của Nga; đóng góp đo được của declaration trên bộ base là 1 case (R12). Vì bộ base đã đạt trần, điểm 1.00 không chứng minh agent hoàn hảo: R12 cho thấy eval chỉ chấm `response_type` chứ không chấm chất lượng câu hỏi xác nhận.
 
-Còn cần: prompt/tools và run v1 của Nga; run v2, so sánh số liệu, version_log và kết luận theo log thật. Sau merge đã có run v0 Gemini của nhóm, chưa có v1. Cần thống nhất provider/model trước khi so sánh với máy Huyền đang dùng OpenAI. Bonus chưa hoàn thành. RULES.md/RUBRIC.md được README nhắc tới nhưng đang thiếu nên chưa thể khẳng định đáp ứng toàn bộ rubric gốc. Vòng tiếp theo phải dựa trên failures thật.
+Còn cần: bonus Small Local Model (Ollama) sau khi nhóm có v3; email/GitHub trong TEAM.md.

@@ -45,11 +45,11 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Trạng thái và phần còn cần hoàn thành
 
-- **Đã xong:** declaration, kiểm tra offline, kiểm tra API và báo cáo phần đã thực hiện.
-- **V2 chưa chạy:** cần prompt, tool declaration và run JSON v1 của Nga; dùng cùng provider/model và bộ eval, giữ nguyên prompt để so sánh. Sau run thật mới ghi metric/hash vào version_log và kết luận trong báo cáo.
+- **Đã xong:** declaration, kiểm tra offline, kiểm tra API, **v2** và báo cáo.
+- **v2 đã chạy:** giữ prompt v1 của Nga (hash `ea21801f0290`), chỉ đổi tools sang `tools.yaml` (hash `64a6349a4b00`); `openai / gpt-4o-mini`, 0 provider error, 20/20. case_accuracy 0.95 → 1.00; R12 FAIL → PASS, không case nào bị hỏng. Đã ghi version_log và B1.
 - **Bonus B7 chưa thực hiện:** cần Ollama và bản v3 đã đo của nhóm; chưa có bằng chứng để tính điểm bonus.
 - `RULES.md` và `RUBRIC.md` được README nhắc tới nhưng chưa có trong checkout khi thực hiện; cần bổ sung để đối chiếu đầy đủ.
-- Email, tài khoản GitHub của Huyền và commit kỹ thuật: chưa bổ sung. Chưa commit/push các thay đổi P2 tại thời điểm cập nhật này.
+- Email, tài khoản GitHub của Huyền và commit kỹ thuật: chưa bổ sung. Commit kỹ thuật: `8c33caf` và commit v2.
 
 ### Bằng chứng
 
@@ -60,8 +60,8 @@ Theo yêu cầu bổ sung của Huyền, đã xây UI Streamlit để thử trư
 ### Bằng chứng P2
 
 - [Báo cáo cá nhân — 2A202604077_DuongThiHuyen.md](report/team/2A202604077_DuongThiHuyen.md).
-- [Tool declaration v2 đang chờ đo](starter_v0/artifacts/tools.yaml) và [declaration starter](starter_v0/artifacts/tools_baseline.yaml).
+- [Tool declaration v2](starter_v0/artifacts/tools.yaml) và [declaration starter](starter_v0/artifacts/tools_baseline.yaml).
 - [Kết quả kiểm tra P2](report/team/evidence/p2-validation.md).
 - [Hướng dẫn setup và bàn giao P2](docs/HUYEN-HANDOFF.md).
 - [Báo cáo nhóm — B1 và B7](report/team/group_report.md).
-- Run v2, dòng v2 trong [version_log.csv](starter_v0/artifacts/version_log.csv) và commit/PR: bổ sung sau khi thực hiện, không dùng số liệu giả.
+- [Run v2](starter_v0/runs/v2_B_base_openai_20261110T180319042654.json) và dòng v2 trong [version_log.csv](starter_v0/artifacts/version_log.csv).
