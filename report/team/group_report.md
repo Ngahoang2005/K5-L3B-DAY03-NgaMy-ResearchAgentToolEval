@@ -18,17 +18,17 @@
 
 > 1–2 câu mô tả agent dùng để làm gì (cho team khác hiểu nhanh).
 
-Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng hợp thành digest, và gửi lên Telegram khi được xác nhận."
+NgaMy Research giúp tìm tin web và bài đăng, đọc URL/paper, tra chính sách nội bộ và tổng hợp kết quả có nguồn. UI hỗ trợ hội thoại nhiều lượt, xem tool calls và xác nhận riêng trước khi thực hiện hành động gửi.
 
 **Cách chạy UI:**
 
-> Lệnh chạy UI (ví dụ `streamlit run app.py`) và dependency đã thêm vào `starter_v0/requirements.txt`.
+Từ `starter_v0/`: `.\.venv\Scripts\python.exe -m streamlit run app.py`. Đã thêm Streamlit và jsonschema vào `requirements.txt`. Hướng dẫn: [UI-GUIDE.md](../../docs/UI-GUIDE.md).
 
 **Link dùng thử (deploy):**
 
 > Dán link public để team khác mở thử ngay. Cách deploy nhanh bằng Cloudflare Tunnel xem README. Nếu deploy Vercel/Streamlit Cloud thì dán link đó.
 >
-> URL:
+URL cục bộ: http://127.0.0.1:8501. Chưa triển khai link public; P5/nhóm cần bổ sung link dùng thử để hoàn tất CP5.
 
 ### A2. Tool agent có
 
@@ -37,16 +37,24 @@ Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc 
 | Tên tool | Làm được gì | Tool mới nhóm thêm? |
 |---|---|---|
 | clarify | hỏi lại người dùng khi thiếu thông tin | không |
-|  |  |  |
-|  |  |  |
+| timeline / social_search | lấy bài một tài khoản / tìm bài theo từ khóa | không |
+| lookup / fetch | tìm nguồn web / đọc URL | không |
+| format | định dạng dữ liệu đã có thành digest | không |
+| policy | tra chính sách nội bộ | không |
+| papers / paper_text | tìm arXiv / đọc trích đoạn paper | không |
+| send | gửi Telegram sau xác nhận; cần cấu hình Telegram | không |
+
+UI đọc danh sách động từ declaration; cập nhật bảng này khi nhóm bổ sung tool mới.
 
 ### A3. Câu hỏi mẫu để thử
 
 > 3–5 câu hỏi/yêu cầu mẫu để team khác tự thử agent ngay.
 
-1.
-2.
-3.
+1. Tìm 3 tin mới về AI trong tuần qua, tóm tắt kèm nguồn.
+2. Lấy 3 bài đăng mới nhất của tài khoản @sama.
+3. Đọc https://example.com và tóm tắt nội dung.
+4. Đọc bài này giúp mình. (Sau đó bổ sung URL để thử hội thoại nhiều lượt.)
+5. Soạn bản tin từ kết quả vừa tìm; yêu cầu gửi Telegram để kiểm tra xác nhận/hủy.
 
 ## 3. Giải pháp
 
@@ -64,7 +72,7 @@ Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. 
 |---|---|---|---:|---:|---|
 | v0 | baseline |  |  |  |  |
 | v1 |  |  |  |  |  |
-| v2 |  |  |  |  |  |
+| v2 (P2, chờ chạy) | tools.yaml | Làm rõ phạm vi tool/args, giữ prompt v1 để giảm lỗi routing/args | Chưa có run v1 | Chưa đo | Chưa có; xem docs/HUYEN-HANDOFF.md |
 | v3 |  |  |  |  |  |
 
 ### B2. Failure Analysis
@@ -98,6 +106,7 @@ Lấy từ `starter_v0/transcripts/*.transcript.json`.
 | Tool mới (`tools/<tên>/`) |  |  |  |
 | Unit test tool mới (≥ 3 test/tool) | `pytest` output (0 failed) |  |  |
 | UI (lệnh chạy + link dùng thử) |  |  |  |
+| UI bổ sung theo yêu cầu của Huyền | `starter_v0/app.py`, `ui_runtime.py`, [hướng dẫn](../../docs/UI-GUIDE.md), [kiểm tra UI](evidence/ui-validation.md) | Chat nhiều lượt, registry động, trace tool, snapshot/hash và tải transcript; local tại cổng 8501 | Prompt UI riêng, guard xác nhận; chưa có link public, không thay điểm eval |
 
 Tool unit tests: số test đã viết, và một ví dụ lỗi mà unit test bắt được nhưng eval không bắt được.
 
@@ -117,6 +126,8 @@ Test challenge: số bug tìm được trong tool có sẵn (nếu có), cách s
 ### B7. Small Local Model Challenge (bonus)
 
 Chỉ điền nếu nhóm làm bonus này.
+
+**P2 — Huyền: chưa thực hiện bonus.** Chưa có Ollama và bản v3 của nhóm để chạy so sánh. Chưa có run local hay kết luận cải thiện; các bảng dưới là mẫu chưa có số liệu, không diễn giải ô trống thành 0. Xem [hướng dẫn](../../docs/HUYEN-HANDOFF.md) và [bằng chứng kiểm tra P2](evidence/p2-validation.md): offline 62 passed, 17 skipped, 0 failed; preflight OpenAI/gpt-4o-mini PASS. Các kiểm tra này không thay thế local eval.
 
 | Version | Model (provider) | Prompt/Tools | case_accuracy | tool_routing | argument | multiturn | Run File |
 |---|---|---|---|---|---|---|---|
