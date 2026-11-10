@@ -1,4 +1,4 @@
-# Báo cáo cá nhân — HoVaTen-MSSV
+# Báo cáo cá nhân — BuiThuPhuong-2A202604080
 
 Đổi tên file theo quy tắc `MSSV_HoTen.md`.
 
@@ -12,7 +12,7 @@ Ví dụ: `20241234_NguyenVanAn.md`.
 
 ## 2. Phần việc phụ trách
 
-...
+CP3: viết tool mới và unit test
 
 ## 3. Đóng góp cụ thể
 
