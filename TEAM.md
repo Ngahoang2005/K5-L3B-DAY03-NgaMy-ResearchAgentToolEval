@@ -101,7 +101,7 @@ Mỗi thành viên có báo cáo riêng trong `report/team/MSSV_HoTen.md`. Mục
 
 ### Trạng thái
 
-- Báo cáo cá nhân `report/team/2A202604080_BuiThuPhuong`: thiếu đuôi `.md`, cần điền mục 2–5.
+- Báo cáo cá nhân [2A202604080_BuiThuPhuong.md](report/team/2A202604080_BuiThuPhuong.md): đã đổi đúng tên và điền mục 2–5. Dòng Tool mới và Unit test trong bảng B5a đã điền.
 
 ## Đặng Thùy Dung — 2A202604116
 
@@ -133,5 +133,5 @@ Mỗi thành viên có báo cáo riêng trong `report/team/MSSV_HoTen.md`. Mục
 - [Báo cáo cá nhân — 2A202604097_PhamMinhTam.md](report/team/2A202604097_PhamMinhTam.md).
 - Mã và kiểm thử: [app.py](starter_v0/app.py), [test_ui.py](starter_v0/tests/test_ui.py); hướng dẫn: [UI-GUIDE.md](docs/UI-GUIDE.md).
 - Commit UI: `f1fa228` (sửa khoảng cách đầu trang), `2d021ca` (tinh chỉnh chat và lịch sử). Commit báo cáo nhóm: `c59d83f`.
-- Kiểm tra gần nhất: `python -m pytest -q starter_v0/tests` — **123 passed**.
+- Kiểm tra gần nhất: `python -m pytest -q starter_v0/tests` — **126 passed**.
 - Email và username GitHub đã ghi nhận: `minhtama11qc@gmail.com` và `minhtama11qc-hash`.

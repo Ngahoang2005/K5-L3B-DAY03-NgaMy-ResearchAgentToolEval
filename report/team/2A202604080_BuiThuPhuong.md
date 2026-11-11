@@ -1,9 +1,5 @@
 # Báo cáo cá nhân — BuiThuPhuong-2A202604080
 
-Đổi tên file theo quy tắc `MSSV_HoTen.md`.
-
-Ví dụ: `20241234_NguyenVanAn.md`.
-
 ## 1. Thông tin thành viên
 
 - Họ tên: Bùi Thu Phương
@@ -26,7 +22,7 @@ CP3: viết tool mới và unit test
 
 - **Unit test:** 19 test cho 4 tool mới (mỗi tool có happy path, input xấu, nhánh lỗi) + viết 14 test
   TODO có sẵn (clarify, format, send, lookup, fetch, timeline, social_search, policy).
-  Kết quả: `pytest tests/` → **115 passed, 0 skipped, 0 failed**, chạy offline (mock HTTP).
+  Kết quả: `pytest tests/` → **126 passed, 0 skipped, 0 failed** (toàn suite trên `main`, gồm cả regression test và test UI của nhóm), chạy offline (mock HTTP).
 
 ## 4. Bằng chứng
 
@@ -34,8 +30,8 @@ CP3: viết tool mới và unit test
   - Tool: `starter_v0/tools/wiki/`, `hn/`, `github/`, `hf/`
   - Test: `starter_v0/tests/test_tools_todo.py`
   - Commit `367b291` — CP3: add wiki, hn, github, hf tools with unit tests
-  - Commit `ca26407` — Add baseline eval runs
-  - PR:
+  - Commit `ca26407` — Add baseline eval runs (nhánh `buithuphuong/runs`, chưa vào `main`, không dùng làm run chính thức)
+  - PR: không có, nhánh được merge trực tiếp vào `main` qua commit `f73fb2c`
 - AI/công cụ đã dùng và cách tự kiểm tra kết quả:
   - Dùng Claude Code để gợi ý cấu trúc tool, viết code và test, debug lỗi setup.
   - Tự kiểm tra: chạy `pytest tests/ -v` (0 failed); chạy `pytest tests/test_tool_contract.py` để chắc
