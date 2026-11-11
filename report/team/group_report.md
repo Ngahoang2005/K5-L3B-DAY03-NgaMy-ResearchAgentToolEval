@@ -11,7 +11,7 @@
 
 - Tên nhóm: Nga My
 - Thành viên và phân công: xem [TEAM.md](../../TEAM.md)
-- Provider/model dùng cho v0–v3:
+- Provider/model dùng cho v0–v3: `openai` / `gpt-4o-mini`, temperature 0 (v4 và các phiên live chat dùng cùng provider/model). Mọi run trong B1 đều có `provider_error_cases == 0`.
 
 ## 2. Mục tiêu và cách tiếp cận — PHẦN A: Giới thiệu agent
 
@@ -65,7 +65,27 @@ Ba tình huống đầu cũng phù hợp làm kịch bản chạy `chat.py`; tra
 
 > Tóm tắt các thay đổi chính trong `starter_v0/artifacts/system_prompt.md` và `starter_v0/artifacts/tools.yaml`, và tool mới nhóm viết (tên, làm gì, khi nào agent nên gọi).
 
--
+**`system_prompt.md` (v1, giữ nguyên đến v4, hash `ea21801f0290`).** Bỏ 3 chỉ dẫn xấu của starter (đoán thay vì hỏi, gửi không cần xác nhận, ép chọn một tool) và thay bằng 4 quy tắc:
+
+- Ngoài phạm vi research thì trả lời bằng text, không gọi tool.
+- Thiếu thông tin thì gọi `clarify`, không bịa tài khoản hay URL.
+- Gửi/đăng phải xin xác nhận `yes_no` trước, chỉ gọi `send` với `confirmed: true` sau khi người dùng đồng ý.
+- Một yêu cầu có thể cần nhiều tool.
+
+**`tools.yaml`.**
+
+- v2: viết lại mô tả 10 tool có sẵn theo dạng khi nào dùng / khi nào không dùng, nêu rõ quy ước tham số (handle không có `@`, `query` chỉ chứa từ khóa, tin tức dùng `topic=news`) và yêu cầu gửi/đăng luôn bắt đầu bằng `clarify` `yes_no`.
+- v3: viết lại mô tả `policy_area` theo loại câu hỏi, chỉ dùng `all` khi câu hỏi thật sự thuộc nhiều vùng.
+- v4: khai báo 4 tool mới, giữ nguyên nội dung 10 tool cũ.
+
+**Tool mới (không cần API key, lỗi trả error dict).**
+
+| Tool | Làm gì | Agent nên gọi khi |
+| --- | --- | --- |
+| `wiki` | Tóm tắt một bài Wikipedia (vi/en) | Cần định nghĩa hoặc bối cảnh nền về khái niệm, người, tổ chức |
+| `hn` | Tìm story trên Hacker News | Muốn biết cộng đồng dev/tech đang bàn gì về một chủ đề |
+| `github` | Tìm repository, lọc theo ngôn ngữ, xếp theo sao hoặc độ mới | Cần thư viện, framework, code mẫu, repo của một dự án |
+| `hf` | Tìm model trên Hugging Face, xếp theo lượt tải, like hoặc độ mới | Cần model đã train sẵn hoặc so độ phổ biến của model |
 
 ## 4. Kết quả — PHẦN B: Chi tiết và bằng chứng
 
@@ -79,6 +99,7 @@ Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. 
 | v1                | system_prompt.md | 5/6 case FAIL ở v0 (R08, R10, R11, R12, R14) do 3 chỉ dẫn xấu của starter (đoán thay vì hỏi, gửi không cần xác nhận, ép một tool). Thay bằng: thiếu thông tin thì `clarify`, gửi phải xác nhận, ngoài phạm vi thì trả lời text, cho phép nhiều tool | 0.70 | 0.95 (19/20) | [`v1_B_base_openai_20261110T175638536349.json`](../../starter_v0/runs/v1_B_base_openai_20261110T175638536349.json) |
 | v2                | tools.yaml       | Case FAIL duy nhất của v1 là R12 (`clarify` dạng `text` thay vì `yes_no`) vì declaration không nói ưu tiên xác nhận khi nội dung gửi còn mơ hồ. Giữ prompt v1, thay tool declaration: yêu cầu gửi/đăng luôn bắt đầu bằng `clarify` `yes_no`; `query` chỉ chứa từ khóa (tin tức dùng `topic=news`); mỗi tool nói khi nào dùng/không dùng | 0.95 | 1.00 (20/20) | [`v2_B_base_openai_20261110T180319042654.json`](../../starter_v0/runs/v2_B_base_openai_20261110T180319042654.json) |
 | v3                | tools.yaml (`policy` → `policy_area`) | Bộ extension trên v2 = 0.70: E01, E08 chọn sai `policy_area` (`all` / bỏ trống) vì mô tả quá ngắn và cho dùng `all` "khi chưa rõ". Viết lại mô tả từng vùng theo loại câu hỏi, chỉ dùng `all` khi thật sự nhiều vùng | base 1.00 · ext 0.70 | base 0.95 / 1.00 (2 run) · ext 1.00 (3 run) | base: [`…182143417083`](../../starter_v0/runs/v3_B_base_openai_20261110T182143417083.json), [`…182429746542`](../../starter_v0/runs/v3_B_base_openai_20261110T182429746542.json); ext: [`…182208227039`](../../starter_v0/runs/v3_B_extension_openai_20261110T182208227039.json), [`…182515936086`](../../starter_v0/runs/v3_B_extension_openai_20261110T182515936086.json), [`…182637521174`](../../starter_v0/runs/v3_B_extension_openai_20261110T182637521174.json) |
+| v4                | tools.yaml (thêm `wiki`, `hn`, `github`, `hf`) | Thêm tool mới có mô tả khi nào dùng / không dùng rõ ràng sẽ không làm agent route nhầm ở bộ base. Prompt giữ nguyên v1, 10 tool cũ giữ nội dung v3 (`v4+pea21801f0290+t85fc98b68764`) | base 1.00 (v3 run 2; run 1 = 0.95) | base 1.00 (20/20) · group 1.00 (10/10) | base: [`…185650551833`](../../starter_v0/runs/v4_B_base_openai_20261110T185650551833.json); group: [`…193007162654`](../../starter_v0/runs/v4_B_group_openai_20261110T193007162654.json) |
 
 **v2 → v3** (`v2+pea21801f0290+t64a6349a4b00` → `v3+pea21801f0290+t544c396ba964`: prompt giữ nguyên v1, chỉ sửa mô tả `policy_area` trong `tools.yaml`).
 
@@ -166,16 +187,27 @@ Bảng tổng hợp 10 eval cases trong `starter_v0/data/eval_group.json` (5 sin
 
 Lấy từ `starter_v0/transcripts/*.transcript.json`.
 
-Bằng chứng trích xuất từ file transcript phiên chạy trực tiếp (`starter_v0/transcripts/v3_openai_20261110T180412234223.transcript.json`):
+Hai phiên chạy thật bằng `chat.py`, provider `openai`, model `gpt-4o-mini`, `artifact_version` `v4+pea21801f0290+t85fc98b68764`.
+
+**Phiên chính:** [`v4_openai_20261111T123937248212.transcript.json`](../../starter_v0/transcripts/v4_openai_20261111T123937248212.transcript.json)
 
 | Turn | User Request | Tool Calls | Version Evidence | Outcome |
-|---|---|---|---|---|
-| **1** | Xin chào, hãy giới thiệu ngắn gọn bạn có thể giúp mình nghiên cứu những gì. | *(Không gọi tool)* `[]` | `v3` (`v3_openai_20261110T180412234223`) | **Success** (Trả lời xã giao/giới thiệu năng lực trực tiếp đúng quy tắc `no_tool`, không gọi tool thừa) |
+| --- | --- | --- | --- | --- |
+| 1 | Tìm 3 tin mới về AI trong tuần qua, tóm tắt kèm nguồn (yêu cầu thường) | `lookup(query="AI", topic="news", timeframe="week", max_results=3)` | v4 | Success: 3 kết quả, trả lời kèm nguồn |
+| 2 | Xem giúp mình tài khoản X đó mới đăng gì (thiếu thông tin) | Không gọi tool | v4 | Partial: agent hỏi lại tên tài khoản và không đoán, nhưng hỏi bằng text thay vì `clarify` |
+| 3 | Tài khoản của Sam Altman, handle là sama, lấy 3 bài thôi (bổ sung) | `timeline(screenname="sama", limit=3)` | v4 | Success: 3 bài đăng |
+| 4 | Gửi tóm tắt mấy bài đăng đó lên Telegram giúp mình (yêu cầu gửi) | `clarify(response_type="yes_no")` | v4 | Success: xin xác nhận, chưa gửi |
+| 5 | Có, gửi đi | `send(text=...)`, **thiếu `confirmed=true`** | v4 | Fail: tool trả `needs_confirmation`, không có tin nào được gửi; agent hỏi xác nhận lại |
 
-**Ghi chú chi tiết về phiên chạy:**
-- **Transcript ID:** `v3_openai_20261110T180412234223`
-- **Phiên bản (Version):** `v3` (OpenAI)
-- **Hành vi kiểm chứng:** Đối với yêu cầu xã giao/hỏi thông tin chung, Agent phản hồi trực tiếp (`assistant_text`) mà không thực hiện `tool_calls`, đáp ứng chuẩn xác tiêu chí đánh giá không tốn chi phí gọi tool vô ích.
+**Phiên phụ:** [`v4_openai_20261111T123840342988.transcript.json`](../../starter_v0/transcripts/v4_openai_20261111T123840342988.transcript.json). Lượt 1 `lookup` thành công, lượt 3 `fetch` một URL người dùng đưa thành công, lượt 4 `clarify` `yes_no` đúng. Hai điểm sai:
+
+- Lượt 2 ("Đọc bài này giúp mình"): agent không hỏi lại mà tự chọn một bài Axios trong kết quả trước để `fetch`.
+- Lượt 5: lại gọi `send` không có `confirmed=true`, tool trả `needs_confirmation`; agent báo "chưa thành công".
+
+**Nhận xét:**
+
+- Guardrail trong code của `send` đã chặn đúng khi thiếu xác nhận, nhưng luồng gửi sau khi người dùng đồng ý **thất bại ở 2/2 phiên**. Nguyên nhân khả dĩ: `confirmed` không nằm trong `required` của `send` ở `tools.yaml`. Eval không bắt được lỗi này vì các case gửi dừng ở bước `clarify`.
+- Chưa kiểm chứng được gửi Telegram thật: máy chạy phiên này không cấu hình `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`, nên nhóm không nhận bonus gửi thật.
 
 ### B5a. Required Evidence — Tool mới, unit test, UI
 
@@ -233,7 +265,14 @@ Lỗi đặc thù của model nhỏ (đếm từ run JSON):
 
 > Khó khăn chính và cách nhóm xử lý. Nếu gặp lỗi kỹ thuật (provider lỗi, hết quota API, tool không chạy), mô tả lỗi và dẫn bằng chứng: run JSON, log, ảnh chụp.
 
--
+| Khó khăn | Cách xử lý | Bằng chứng |
+| --- | --- | --- |
+| Gemini không dùng được ổn định: `gemini-3.8-flash` trả 503/504 khi quá tải, các model khác trả 403 (project không có free tier) hoặc 404 | Chuyển toàn nhóm sang `openai` / `gpt-4o-mini` để mọi version so sánh được với nhau | Lỗi ghi nhận khi preflight, không có run JSON; mọi run trong `starter_v0/runs/` đều dùng OpenAI |
+| Cùng nội dung nhưng `prompt_hash` / `tools_hash` khác nhau giữa các máy do CRLF/LF | Đưa file về LF, chạy lại v2; thêm `.gitattributes` | Ghi chú về hash ở B1; run extension v2 có hash `2c04d07a23e7` |
+| R12 không ổn định: cùng hash v3 nhưng lần FAIL, lần PASS | Chạy lặp nhiều lần thay vì tin một run, ghi cả hai kết quả | `v3_B_base_openai_20261110T182143417083.json` (0.95), `v3_B_base_openai_20261110T182429746542.json` (1.00) |
+| Conflict `tools.yaml` khi merge 4 tool mới với bản mô tả của v2 | Giữ mô tả v2, thêm tool mới, chạy lại base để kiểm tra hồi quy | Commit `f73fb2c`; run `v4_B_base_openai_20261110T185650551833.json` (1.00) |
+| Live chat lộ lỗi mà eval không thấy: `send` thiếu `confirmed=true` sau khi người dùng đồng ý | Chưa sửa; ghi lại thành giả thuyết cho vòng sau (mục B6) | Hai transcript ở B4 |
+| Link demo Cloudflare Quick Tunnel là tạm thời, tắt máy hoặc tắt lệnh là mất | Phải bật lại khi cần demo và cập nhật URL mới ở A1 | Ghi chú ở A1 |
 
 ## 6. Tổng hợp đóng góp
 
@@ -241,11 +280,25 @@ Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEA
 
 ## 7. Hạn chế và hướng cải thiện — B6. Reflection
 
-- Fix nào thuộc `system_prompt.md`?
-- Fix nào thuộc `tools.yaml`?
-- Failure nào cần review thủ công thay vì chấm tự động?
-- Nếu có thêm một vòng, nhóm sẽ thử giả thuyết nào?
+- **Fix nào thuộc `system_prompt.md`?** Các lỗi do chính sách hành vi: bỏ đoán handle/URL (R10, R11), không gọi tool cho câu ngoài phạm vi (R08, R14), không gửi khi chưa xác nhận (bước đầu của R12). Đây là fix của v1, đưa base từ 0.70 lên 0.95.
+- **Fix nào thuộc `tools.yaml`?** Các lỗi về chọn tool và giá trị tham số: `clarify` phải dạng `yes_no` trước khi gửi (R12, v2), chọn đúng `policy_area` (E01, E08, v3). Thêm tool mới cũng thuộc file này (v4).
+- **Failure nào cần review thủ công thay vì chấm tự động?**
+  - Eval chỉ chấm tên tool và tham số, không chấm kết quả tool trả về hay chất lượng câu trả lời.
+  - R12 PASS dù câu hỏi là "Bạn muốn đăng nội dung gì?" gắn `yes_no`, một câu không thể trả lời có/không.
+  - Luồng sau xác nhận (`send` thiếu `confirmed=true`) và việc agent tự chọn bài khi người dùng nói "bài này" chỉ lộ ra khi đọc transcript (B4).
+  - Sự thay đổi không nhắm tới như E06 PASS ở v3 cần đọc lại, chưa đủ bằng chứng để quy cho fix.
+- **Nếu có thêm một vòng, nhóm sẽ thử giả thuyết nào?** Thêm `confirmed` vào `required` của `send` và ghi rõ "sau khi người dùng đồng ý phải truyền `confirmed=true`" sẽ làm luồng gửi hoàn tất mà không làm hỏng case xin xác nhận. Đo bằng case multi-turn mới kết thúc bằng lượt "Có, gửi đi" (kỳ vọng `send(confirmed=true)`), rồi chạy lại base và group. Sau đó thêm case "đọc bài này" ngay sau một danh sách nhiều kết quả, kỳ vọng `clarify`.
 
 ## 8. Tài liệu tham khảo
 
--
+- Tài liệu lab trong repo: [README.md](../../README.md), [RUBRIC.md](../../RUBRIC.md), [CHECKPOINTS.md](../../CHECKPOINTS.md), [TOOL-SETUP.md](../../docs/TOOL-SETUP.md), [UI-GUIDE.md](../../docs/UI-GUIDE.md).
+- Tavily: https://docs.tavily.com/documentation/api-credits
+- Firecrawl: https://docs.firecrawl.dev
+- RapidAPI Twitter API45: https://rapidapi.com/alexanderxbx/api/twitter-api45
+- Wikipedia REST API: https://en.wikipedia.org/api/rest_v1/
+- Hacker News Search API (Algolia): https://hn.algolia.com/api
+- GitHub REST API, tìm repository: https://docs.github.com/en/rest/search/search#search-repositories
+- Hugging Face Hub API: https://huggingface.co/docs/hub/api
+- arXiv API: https://info.arxiv.org/help/api/index.html
+- Telegram Bot API: https://core.telegram.org/bots
+- Streamlit: https://docs.streamlit.io
