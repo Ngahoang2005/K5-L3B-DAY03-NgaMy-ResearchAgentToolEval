@@ -7,6 +7,7 @@ import pytest
 from agent_versions import AGENT_VERSIONS, version_diff
 import ui_runtime as ui
 from providers.base import ModelResponse, ToolCall
+from versioning import file_hash
 
 
 class FakeProvider:
@@ -22,6 +23,15 @@ class FakeProvider:
         if isinstance(response, Exception):
             raise response
         return response
+
+
+def test_file_hash_is_stable_across_line_endings(tmp_path):
+    lf_path = tmp_path / "lf.yaml"
+    crlf_path = tmp_path / "crlf.yaml"
+    lf_path.write_bytes(b"first\nsecond\n")
+    crlf_path.write_bytes(b"first\r\nsecond\r\n")
+
+    assert file_hash(lf_path) == file_hash(crlf_path)
 
 
 @pytest.fixture
