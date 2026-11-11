@@ -5,7 +5,7 @@
 - Họ tên: Phạm Minh Tâm.
 - MSSV: 2A202604097.
 - Email: minhtama11qc@gmail.com.
-- Phần việc thể hiện trong repo: tinh chỉnh UI chat Streamlit (P5/UI). `TEAM.md` chưa ghi phân công chính thức cho thành viên này.
+- Phần việc thể hiện trong repo: tinh chỉnh UI chat Streamlit (P5/UI); phân công được ghi trong [TEAM.md](../../TEAM.md).
 
 ## 2. Phần việc phụ trách
 
@@ -39,4 +39,4 @@ UI nền tảng ban đầu do Dương Thị Huyền thực hiện (commit `8c33c
 
 Đã hoàn thành các tinh chỉnh giao diện chat nêu trên và có test bao phủ trạng thái ghim cùng câu chữ khi lịch sử trống; toàn bộ 123 test hiện có đều đạt tại thời điểm kiểm tra. Phần này là cải tiến UI, không phải bằng chứng hoàn thành CP2, CP3 hoặc đánh giá chất lượng model.
 
-Giới hạn: `TEAM.md` chưa ghi vai trò/phân công chính thức, nên cần nhóm xác nhận và cập nhật mục thành viên trước khi chốt báo cáo. Chưa có bằng chứng trong repo cho việc gửi Telegram thật hoặc một dịch vụ triển khai UI hoạt động liên tục; không tính các việc đó là đã hoàn thành.
+Giới hạn: các tinh chỉnh giao diện không chứng minh chất lượng routing của model. CP5 đã mở một Quick Tunnel tạm thời để demo, nhưng đây không phải dịch vụ triển khai liên tục và chưa có đăng nhập. Chưa có bằng chứng gửi Telegram thật; không tính các việc đó là đã hoàn thành.

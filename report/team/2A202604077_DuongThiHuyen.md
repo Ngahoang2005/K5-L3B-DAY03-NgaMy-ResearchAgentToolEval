@@ -53,7 +53,7 @@ Phụ trách `starter_v0/artifacts/tools.yaml`: chức năng, khi nào dùng/kh�
 
 ## 4. Bằng chứng
 
-Đóng góp bổ sung theo yêu cầu của Huyền: xây UI Streamlit dùng chung cho nhóm, có chat nhiều lượt, chọn model/artifact, registry động, xác nhận hành động và lưu/tải transcript. Đây là phần hỗ trợ P5 ngoài phân công P2. Xem [hướng dẫn UI](../../docs/UI-GUIDE.md) và [bằng chứng UI](evidence/ui-validation.md). UI chạy local; chưa có link public. Prompt demo riêng không được ghi thành prompt v2 đã đo.
+Đóng góp bổ sung theo yêu cầu của Huyền: xây UI Streamlit dùng chung cho nhóm, có chat nhiều lượt, chọn model/artifact, registry động, xác nhận hành động và lưu/tải transcript. Đây là phần hỗ trợ P5 ngoài phân công P2. Xem [hướng dẫn UI](../../docs/UI-GUIDE.md) và [bằng chứng UI](evidence/ui-validation.md). CP5 đã mở Quick Tunnel tạm thời cho demo; link không có đăng nhập và chỉ tồn tại khi tiến trình còn chạy. Prompt demo riêng không được ghi thành prompt v2 đã đo.
 
 - Declaration: [tools.yaml](../../starter_v0/artifacts/tools.yaml); bản gốc: [tools_baseline.yaml](../../starter_v0/artifacts/tools_baseline.yaml).
 - Kiểm tra thực tế: [p2-validation.md](evidence/p2-validation.md).

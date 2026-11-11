@@ -27,14 +27,17 @@ Từ `starter_v0/`, cài dependencies bằng `python -m pip install -r requireme
 
 **Link dùng thử (deploy):**
 
-**Link demo hiện tại:** https://lottery-showed-note-bus.trycloudflare.com (đã kiểm tra health HTTP 200). Đây là Cloudflare Quick Tunnel tạm thời, không phải deployment cố định; chỉ hoạt động khi máy chủ Streamlit và tiến trình tunnel còn chạy. Nếu link hết hạn, chạy lại `cloudflared tunnel --url http://127.0.0.1:8501` và thay URL tại đây. Tunnel không có đăng nhập; chỉ chia sẻ với người tin cậy vì các yêu cầu dùng quota API của máy chủ.
+**Link demo hiện tại:** https://perfectly-sell-sector-enormous.trycloudflare.com (đã kiểm tra health HTTP 200). Đây là Cloudflare Quick Tunnel tạm thời, không phải deployment cố định; chỉ hoạt động khi máy chủ Streamlit và tiến trình tunnel còn chạy. Nếu link hết hạn, chạy lại `cloudflared tunnel --url http://127.0.0.1:8501` và thay URL tại đây. Tunnel không có đăng nhập; chỉ chia sẻ với người tin cậy vì các yêu cầu dùng quota API của máy chủ.
 
 ### A2. Tool agent có
 
 > Liệt kê các tool agent đang dùng (gồm tool mới nhóm tự thêm). Mỗi tool 1 dòng: tên + làm được gì.
 
 | Tên tool | Làm được gì | Tool mới nhóm thêm? |
-|---|---|---|
+|- **Prompt:** v1 bỏ các chỉ dẫn starter khuyến khích đoán thông tin, luôn gọi tool, và gửi ngay; yêu cầu `clarify` khi thiếu dữ liệu, không gọi tool ngoài phạm vi, cho phép gọi nhiều tool khi cần, và chỉ gửi sau xác nhận.
+- **Tool declaration:** v2 mô tả điều kiện dùng/không dùng, quy ước đối số (ví dụ `query` chỉ giữ từ khóa, tin tức dùng `topic="news"`), và buộc yêu cầu gửi/đăng bắt đầu bằng xác nhận `yes_no`. v3 làm rõ cách chọn `policy_area` theo chủ đề.
+- **Tool mới:** Phương thêm `wiki` (tóm tắt Wikipedia), `hn` (tìm Hacker News), `github` (tìm repository) và `hf` (tìm model Hugging Face); mỗi tool có implementation, `TOOL.md`, declaration và unit test.
+- **UI:** Streamlit cho phép chọn version/model, chat nhiều lượt, xem tool call/lịch sử và transcript; hành động có side effect dừng ở bước xác nhận. Lệnh chạy và giới hạn xem [UI-GUIDE](../../docs/UI-GUIDE.md).--|---|---|
 | `clarify` | Hỏi lại khi thiếu thông tin; xin xác nhận trước hành động gửi/đăng. | không |
 | `timeline` / `social_search` | Lấy bài từ tài khoản X đã biết / tìm bài X theo chủ đề. | không |
 | `lookup` / `fetch` | Tìm web/tin tức / đọc URL đã biết. | không |
@@ -185,8 +188,6 @@ Bảng tổng hợp 10 eval cases trong `starter_v0/data/eval_group.json` (5 sin
 
 ### B4. Live Chat Evidence
 
-Lấy từ `starter_v0/transcripts/*.transcript.json`.
-
 Hai phiên chạy thật bằng `chat.py`, provider `openai`, model `gpt-4o-mini`, `artifact_version` `v4+pea21801f0290+t85fc98b68764`.
 
 **Phiên chính:** [`v4_openai_20261111T123937248212.transcript.json`](../../starter_v0/transcripts/v4_openai_20261111T123937248212.transcript.json)
@@ -209,16 +210,18 @@ Hai phiên chạy thật bằng `chat.py`, provider `openai`, model `gpt-4o-mini
 - Guardrail trong code của `send` đã chặn đúng khi thiếu xác nhận, nhưng luồng gửi sau khi người dùng đồng ý **thất bại ở 2/2 phiên**. Nguyên nhân khả dĩ: `confirmed` không nằm trong `required` của `send` ở `tools.yaml`. Eval không bắt được lỗi này vì các case gửi dừng ở bước `clarify`.
 - Chưa kiểm chứng được gửi Telegram thật: máy chạy phiên này không cấu hình `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`, nên nhóm không nhận bonus gửi thật.
 
+Các lượt bổ sung của CP5 cũng được lưu trong [`v4_openai_20261111T122420930740.transcript.json`](../../starter_v0/transcripts/v4_openai_20261111T122420930740.transcript.json) và [`v4_openai_20261111T122552406027.transcript.json`](../../starter_v0/transcripts/v4_openai_20261111T122552406027.transcript.json). Chúng xác nhận tìm tin và luồng hỏi URL → fetch; đồng thời ghi nhận model lặp lại `lookup` khi user nói “bài này”, và câu `clarify` đầu tiên ở phiên sau chưa đúng ý. Không tính các hành vi đó là pass.
+
 ### B5a. Required Evidence — Tool mới, unit test, UI
 
 | Item                               | Evidence File                                                                                                       | What Worked                                                                                      | Risk / Guardrail                                                           |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
 | Tool mới (`tools/<tên>/`) | `starter_v0/tools/wiki/`, `hn/`, `github/`, `hf/`; commit `367b291`, merge `f73fb2c` | 4 tool không cần API key, đủ `tool.py` + `TOOL.md`, đã đăng ký; eval group có case route tới cả 4 (G05, G09, G03, G06, G10) | Validate input, lỗi trả error dict; `limit` kẹp trong [1, 20] (`hn`, `github`, `hf`); GitHub hết rate limit thì báo lỗi rõ |
-| Unit test tool mới (≥ 3 test/tool) | `starter_v0/tests/test_tools_todo.py`; `pytest`: 126 passed, 0 skipped, 0 failed | 19 test cho 4 tool (wiki 5, hn 4, github 5, hf 5), mỗi tool có happy path, input xấu, nhánh lỗi | HTTP được mock, `block_network` chặn mạng thật; unit test không chứng minh API thật còn đúng định dạng nên cần gọi thử riêng |
-| UI (lệnh chạy + link dùng thử)     |                                                                                                                     |                                                                                                  |                                                                            |
-| UI bổ sung theo yêu cầu của Huyền  | `starter_v0/app.py`, `ui_runtime.py`, [hướng dẫn](../../docs/UI-GUIDE.md), [kiểm tra UI](evidence/ui-validation.md) | Chat nhiều lượt, registry động, trace tool, snapshot/hash và tải transcript; local tại cổng 8501 | Prompt UI riêng, guard xác nhận; chưa có link public, không thay điểm eval |
+| Unit test tool mới (≥ 3 test/tool) | `starter_v0/tests/test_tools_todo.py`; `python -m pytest -q` — **128 passed, 0 failed** | 19 test cho 4 tool (wiki 5, hn 4, github 5, hf 5), mỗi tool có happy path, input xấu, nhánh lỗi | HTTP được mock; unit test không chứng minh API thật còn đúng định dạng nên cần gọi thử riêng |
+| UI (lệnh chạy + link dùng thử) | [`app.py`](../../starter_v0/app.py), [`UI-GUIDE.md`](../../docs/UI-GUIDE.md), https://perfectly-sell-sector-enormous.trycloudflare.com | `streamlit run app.py`; tunnel HTTP 200, transcript lưu server-side. | Quick Tunnel tạm thời, không có đăng nhập; người dùng dùng quota API máy chủ. |
+| UI bổ sung theo yêu cầu của Huyền | [`app.py`](../../starter_v0/app.py), [`ui_runtime.py`](../../starter_v0/ui_runtime.py), [hướng dẫn](../../docs/UI-GUIDE.md), [kiểm tra UI](evidence/ui-validation.md) | Chat nhiều lượt, registry động, trace tool, snapshot/hash, tải transcript và xác nhận action. | Không xác nhận thì không gửi; prompt UI riêng và kết quả UI không thay điểm eval. |
 
-Tool unit tests: 19 test cho 4 tool mới. Ví dụ lỗi unit test bắt được nhưng eval không bắt được: nếu bỏ nhánh xử lý HTTP 403 trong `github`, `test_github_rate_limit_returns_error_dict` fail. Eval vẫn không đổi điểm vì `run_eval.py` chỉ chấm tên tool và tham số, không chấm kết quả tool trả về.
+Tool unit tests: 19 test cho 4 tool mới. Ví dụ, nếu bỏ nhánh xử lý HTTP 403 trong `github`, `test_github_rate_limit_returns_error_dict` fail; eval model chỉ chấm lựa chọn tool/args nên không phát hiện lỗi này. Test mock không chứng minh API thật luôn ổn định. Regression test cũng bắt lỗi `limit=-1` trước đây làm `timeline`/`social_search` trả sai số lượng kết quả.
 
 ### B5. Bonus Evidence
 
@@ -226,10 +229,10 @@ Chỉ điền nếu nhóm làm bonus (ghi riêng, tối đa 10 điểm). Tool c�
 
 | Bonus                                        | Evidence File   | What Worked | Risk / Guardrail |
 | -------------------------------------------- | --------------- | ----------- | ---------------- |
-| Small Local Model                            | xem B7          |             |                  |
-| Hơn 3 tool mới (≥ 4)                         |                 |             |                  |
-| `send` gửi thật lên Telegram sau xác nhận    | transcript      |             |                  |
-| Test challenge (0 skipped / regression test) | `pytest` output |             |                  |
+| Small Local Model                            | xem B7          | Chưa thực hiện; không khai nhận bonus. | Chưa có run Ollama để so sánh. |
+| Hơn 3 tool mới (≥ 4)                         | `starter_v0/tools/{wiki,hn,github,hf}/` | Hoàn thành 4 tool mới. | Các API ngoài có quota và thay đổi response. |
+| `send` gửi thật lên Telegram sau xác nhận    | [`v4_openai_20261111T122420930740.transcript.json`](../../starter_v0/transcripts/v4_openai_20261111T122420930740.transcript.json) | Chỉ kiểm tra agent hỏi `yes_no`; **không gửi thật**. | Telegram credentials chưa cấu hình; không có lượt xác nhận. |
+| Test challenge (0 skipped / regression test) | [`test_tools_todo.py`](../../starter_v0/tests/test_tools_todo.py), `python -m pytest -q` | 128 passed, gồm regression test cho `limit` âm. | Kết quả test offline không thay live API/eval. |
 
 Test challenge: số bug tìm được trong tool có sẵn (nếu có), cách sửa, và test regression tương ứng.
 
@@ -257,9 +260,9 @@ Lỗi đặc thù của model nhỏ (đếm từ run JSON):
 | missed `clarify`                              |       |              |           |         |
 | repeated / unnecessary calls                  |       |              |           |         |
 
-- Cái gì giúp model nhỏ gọi tool đúng hơn nhất? Bằng chứng?
-- Bản prompt tối ưu cho local chạy trên model cloud thì sao?
-- Khi nào nhóm sẽ chọn model local thay vì cloud cho agent này?
+- Chưa có run model local; không đủ bằng chứng để kết luận prompt/tool nào giúp model nhỏ gọi tool đúng hơn.
+- Chưa có so sánh prompt local với model cloud.
+- Chỉ cân nhắc local sau khi có run lặp lại chứng minh chất lượng chấp nhận được, đồng thời có yêu cầu riêng tư/chi phí/vận hành phù hợp.
 
 ## 5. Khó khăn và cách xử lý
 
@@ -276,7 +279,15 @@ Lỗi đặc thù của model nhỏ (đếm từ run JSON):
 
 ## 6. Tổng hợp đóng góp
 
-Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEAM.md) và các báo cáo cá nhân `report/team/MSSV_HoTen.md`.
+| Thành viên | Đóng góp chính | Báo cáo cá nhân |
+|---|---|---|
+| Hoàng Thị Thanh Nga | Baseline, prompt, v3/v4, eval nhóm, regression test, tổng hợp. | [2A202604079_HoangThiThanhNga.md](2A202604079_HoangThiThanhNga.md) |
+| Dương Thị Huyền | Tool declaration, v2, UI nền Streamlit. | [2A202604077_DuongThiHuyen.md](2A202604077_DuongThiHuyen.md) |
+| Bùi Thu Phương | Bốn tool mới và unit tests. | [2A202604080_BuiThuPhuong.md](2A202604080_BuiThuPhuong.md) |
+| Đặng Thùy Dung | Bản đầu eval nhóm và phối hợp kiểm thử. | [2A202604116_DangThuyDung.md](2A202604116_DangThuyDung.md) |
+| Phạm Minh Tâm | Tinh chỉnh UI và Phần A theo commit. | [2A202604097_PhamMinhTam.md](2A202604097_PhamMinhTam.md) |
+
+Phân công và bằng chứng commit chi tiết: [TEAM.md](../../TEAM.md).
 
 ## 7. Hạn chế và hướng cải thiện — B6. Reflection
 

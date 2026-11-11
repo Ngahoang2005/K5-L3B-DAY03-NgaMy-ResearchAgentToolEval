@@ -6,9 +6,11 @@ from pathlib import Path
 
 import streamlit as st
 
+from agent_versions import AGENT_VERSIONS, version_diff
 from env_loader import load_lab_env
 from providers import make_provider
 from ui_runtime import ROOT, new_session, redact, resolve_action, run_turn, save_session, transcript_json
+from versioning import build_artifact_version
 
 st.set_page_config(page_title="NgaMy Research", page_icon="🔎", layout="wide")
 load_lab_env(ROOT)
@@ -42,24 +44,40 @@ with st.sidebar:
     provider_name = st.selectbox("Provider", ["openai", "openrouter", "anthropic", "gemini", "ollama"], key="provider_choice")
     default_model = getattr(make_provider(provider_name), "default_model", "")
     model = st.text_input("Model (để trống dùng mặc định)", placeholder=default_model, key=f"model_{provider_name}")
-    version = st.text_input("Nhãn phiên", value="ui-preview", help="Nhãn ghi vào transcript; không tự tạo một run eval v2.")
-    prompts = sorted((ROOT / "artifacts").glob("*.md"))
-    prompt_names = [p.name for p in prompts]
-    # Default to the measured project prompt (v1, used by v2 eval); system_prompt_ui.md stays selectable for demos.
-    selected_prompt = st.selectbox("System prompt", prompt_names, index=prompt_names.index("system_prompt.md") if "system_prompt.md" in prompt_names else 0)
-    tool_paths = sorted((ROOT / "artifacts").glob("*.yaml"))
-    tool_names = [p.name for p in tool_paths]
-    selected_tools = st.selectbox("Tool declaration", tool_names, index=tool_names.index("tools.yaml") if "tools.yaml" in tool_names else 0)
+    version_choices = [*AGENT_VERSIONS, "Tùy chỉnh"]
+    selected_version = st.selectbox("Version agent", version_choices, index=version_choices.index("v4"))
+    if selected_version == "Tùy chỉnh":
+        version = st.text_input("Nhãn phiên tùy chỉnh", value="ui-preview")
+        prompt_names = sorted(path.name for path in (ROOT / "artifacts").glob("*.md"))
+        selected_prompt = st.selectbox(
+            "System prompt",
+            prompt_names,
+            index=prompt_names.index("system_prompt.md") if "system_prompt.md" in prompt_names else 0,
+        )
+        tool_names = sorted(path.name for path in (ROOT / "artifacts").glob("*.yaml"))
+        selected_tools = st.selectbox(
+            "Tool declaration",
+            tool_names,
+            index=tool_names.index("tools.yaml") if "tools.yaml" in tool_names else 0,
+        )
+        prompt_path = ROOT / "artifacts" / selected_prompt
+        tools_path = ROOT / "artifacts" / selected_tools
+        version = version.strip() or "ui-preview"
+    else:
+        profile = AGENT_VERSIONS[selected_version]
+        prompt_path = profile.prompt_path
+        tools_path = profile.tools_path
+        version = profile.version
+        st.caption(f"{profile.title} · Eval tham khảo: {profile.accuracy}")
     with st.expander("Giới hạn hội thoại"):
         rounds = st.slider("Vòng tool tối đa mỗi lượt", 1, 10, 5)
         history_window = st.slider("Số cặp hội thoại giữ trong ngữ cảnh", 1, 20, 8)
-    apply = st.button("Áp dụng & tạo phiên mới", type="primary", width="stretch")
+    apply = st.button("Áp dụng version & tạo phiên mới", type="primary", width="stretch")
     st.caption("Đổi cấu hình cần tạo phiên mới. Phiên cũ đã tự lưu sau mỗi lượt; tải JSON trước khi đổi nếu cần.")
     if apply or "research" not in st.session_state:
         try:
             st.session_state.research = new_session(provider_name, model.strip() or default_model,
-                version.strip() or "ui-preview", ROOT / "artifacts" / selected_prompt,
-                ROOT / "artifacts" / selected_tools, rounds, history_window)
+                version, prompt_path, tools_path, rounds, history_window)
             st.session_state.save_error = None
         except Exception as exc:
             st.error(redact(str(exc)))
@@ -82,8 +100,8 @@ top[0].metric("Model đang dùng", session["model"])
 top[1].metric("Tool sẵn sàng", len(session["declarations_snapshot"]))
 top[2].metric("Lượt hội thoại", len(session["turns"]))
 st.caption(f"Phiên: {session['version']} · {session['provider']} · Prompt: {session['system_prompt']} · Tools: {session['tools']}")
-chat_tab, tools_tab, evidence_tab = st.tabs(
-    ["Trò chuyện", "Công cụ & cấu hình", "Lịch sử chat"],
+chat_tab, tools_tab, versions_tab, history_tab = st.tabs(
+    ["Trò chuyện", "Công cụ & cấu hình", "Phiên bản Agent", "Lịch sử chat"],
     key="research_tabs",
     on_change="rerun",
 )
@@ -104,14 +122,38 @@ with tools_tab:
     with st.expander("System prompt đang sử dụng"):
         st.code(session["prompt_snapshot"], language="markdown")
 
-with evidence_tab:
+with versions_tab:
+    st.subheader("Phiên bản Agent")
+    st.caption(f"Đang xem: **{selected_version}** · Phiên chatbot đang chạy: **{session['version']}**.")
+    if selected_version == "Tùy chỉnh":
+        st.info("Cấu hình tùy chỉnh không có lịch sử version để so sánh. Chọn v0–v4 ở thanh bên để xem thay đổi.")
+    else:
+        selected_profile = AGENT_VERSIONS[selected_version]
+        st.markdown(f"**{selected_profile.title}** · Độ chính xác eval tham khảo: **{selected_profile.accuracy}**")
+        for change in selected_profile.changes:
+            st.markdown(f"- {change}")
+        st.caption(selected_profile.source)
+        candidate_version = build_artifact_version(
+            selected_profile.version, selected_profile.prompt_path, selected_profile.tools_path,
+        )
+        st.caption("Fingerprint snapshot được áp dụng:")
+        st.code(candidate_version.artifact_version, language=None)
+        if (candidate_version.prompt_hash[:12] != selected_profile.prompt_hash
+                or candidate_version.tools_hash[:12] != selected_profile.tools_hash):
+            st.warning("Snapshot này không trùng hoàn toàn fingerprint của run eval lịch sử; transcript sẽ ghi fingerprint thực tế ở trên.")
+        if selected_version != "v0":
+            st.code(version_diff(selected_version), language="diff")
+
+with history_tab:
     st.subheader("Lịch sử chat")
     st.info("UI dùng vòng chat nhiều bước và có nút xác nhận hành động. Transcript UI không thay thế run_eval.py hoặc yêu cầu chạy chat.py trong đề.")
     st.code(session["artifact_version"], language=None)
     st.caption("Prompt/declaration được chụp lại khi tạo phiên để các lượt dùng cùng cấu hình.")
     st.write(f"File tự lưu: transcripts/{session['transcript_id']}.transcript.json")
     if session["turns"]:
-        st.dataframe([{"Lượt": t["turn_index"], "Yêu cầu": t["user"], "Trạng thái": t["status"],
+        st.dataframe([{"Lượt": t["turn_index"], "Version agent": t.get("version", session["version"]),
+                       "Artifact version": t.get("artifact_version", session["artifact_version"]),
+                       "Yêu cầu": t["user"], "Trạng thái": t["status"],
                        "Số tool": len(t["tool_events"]), "Giây": t.get("duration_seconds", 0)} for t in session["turns"]],
                      width="stretch", hide_index=True)
     else:
@@ -126,7 +168,12 @@ with chat_tab:
             st.write(turn["user"])
         with st.chat_message("assistant"):
             st.markdown(turn.get("assistant_text") or "Không có nội dung trả lời.")
-            st.caption(f"{turn['status']} · {turn.get('duration_seconds', 0)} giây")
+            turn_version = turn.get("version", session["version"])
+            turn_artifact_version = turn.get("artifact_version", session["artifact_version"])
+            st.caption(
+                f"Agent {turn_version} · {turn_artifact_version} · "
+                f"{turn['status']} · {turn.get('duration_seconds', 0)} giây"
+            )
             if turn.get("error"):
                 st.error(turn["error"])
             for index, event in enumerate(turn.get("tool_events", []), 1):

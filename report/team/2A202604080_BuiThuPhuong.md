@@ -1,4 +1,4 @@
-# Báo cáo cá nhân — BuiThuPhuong-2A202604080
+# Báo cáo cá nhân — Bùi Thu Phương — 2A202604080
 
 ## 1. Thông tin thành viên
 
@@ -8,29 +8,28 @@
 
 ## 2. Phần việc phụ trách
 
-CP3: viết tool mới và unit test
+P3 — viết tool mới và unit test: triển khai tool theo contract của repo, thêm `tool.py` và `TOOL.md`, đăng ký implementation/declaration và viết unit test offline.
 
 ## 3. Đóng góp cụ thể
 
-- **4 tool mới** (không cần API key), mỗi tool có `tool.py` + `TOOL.md`, đăng ký trong
-  `tools/__init__.py` và `artifacts/tools.yaml`:
+- **4 tool mới**, mỗi tool có `tool.py` + `TOOL.md`, đăng ký trong `tools/__init__.py` và `artifacts/tools.yaml`:
   - `wiki`: tóm tắt bài Wikipedia (vi/en).
   - `hn`: tìm thảo luận trên Hacker News.
   - `github`: tìm repo mã nguồn mở (hỗ trợ `GITHUB_TOKEN` tuỳ chọn, xử lý hết rate limit).
   - `hf`: tìm model trên Hugging Face Hub.
-  - Tất cả validate input và trả error dict khi lỗi, không raise.
+  - Tất cả validate input và trả error dict khi lỗi.
 
 - **Unit test:** 19 test cho 4 tool mới (mỗi tool có happy path, input xấu, nhánh lỗi) + viết 14 test
   TODO có sẵn (clarify, format, send, lookup, fetch, timeline, social_search, policy).
-  Kết quả: `pytest tests/` → **126 passed, 0 skipped, 0 failed** (toàn suite trên `main`, gồm cả regression test và test UI của nhóm), chạy offline (mock HTTP).
+  Kết quả hiện tại: `python -m pytest -q` → **128 passed, 0 failed** (toàn suite, gồm regression test và test UI của nhóm), chạy offline (mock HTTP).
 
 ## 4. Bằng chứng
 
 - File/commit/PR:
-  - Tool: `starter_v0/tools/wiki/`, `hn/`, `github/`, `hf/`
-  - Test: `starter_v0/tests/test_tools_todo.py`
+  - Tool: [starter_v0/tools/](../../starter_v0/tools/)
+  - Test: [test_tools_todo.py](../../starter_v0/tests/test_tools_todo.py)
   - Commit `367b291` — CP3: add wiki, hn, github, hf tools with unit tests
-  - Commit `ca26407` — Add baseline eval runs (nhánh `buithuphuong/runs`, chưa vào `main`, không dùng làm run chính thức)
+  - Commit `ca26407` — Add baseline eval runs (nhánh `buithuphuong/runs`, không dùng làm run chính thức)
   - PR: không có, nhánh được merge trực tiếp vào `main` qua commit `f73fb2c`
 - AI/công cụ đã dùng và cách tự kiểm tra kết quả:
   - Dùng Claude Code để gợi ý cấu trúc tool, viết code và test, debug lỗi setup.

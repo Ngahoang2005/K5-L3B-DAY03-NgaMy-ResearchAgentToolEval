@@ -101,7 +101,7 @@ Mỗi thành viên có báo cáo riêng trong `report/team/MSSV_HoTen.md`. Mục
 
 ### Trạng thái
 
-- Báo cáo cá nhân [2A202604080_BuiThuPhuong.md](report/team/2A202604080_BuiThuPhuong.md): đã đổi đúng tên và điền mục 2–5. Dòng Tool mới và Unit test trong bảng B5a đã điền.
+- Báo cáo cá nhân [2A202604080_BuiThuPhuong.md](report/team/2A202604080_BuiThuPhuong.md): đã đổi đúng tên và điền mục 2–5. B5a có bằng chứng tool mới và unit test; xem thêm báo cáo nhóm.
 
 ## Đặng Thùy Dung — 2A202604116
 

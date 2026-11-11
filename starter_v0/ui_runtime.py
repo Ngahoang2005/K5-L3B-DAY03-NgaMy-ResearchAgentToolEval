@@ -108,8 +108,15 @@ def run_turn(session: dict[str, Any], user_text: str, provider: Any) -> dict[str
     if session["pending"]:
         raise ValueError("Xác nhận hoặc hủy hành động đang chờ trước khi gửi yêu cầu mới.")
     start = time.monotonic()
-    record: dict[str, Any] = {"turn_index": len(session["turns"]) + 1, "user": user_text,
-                              "started_at": timestamp(), "rounds": [], "tool_events": []}
+    record: dict[str, Any] = {
+        "turn_index": len(session["turns"]) + 1,
+        "user": user_text,
+        "version": session["version"],
+        "artifact_version": session["artifact_version"],
+        "started_at": timestamp(),
+        "rounds": [],
+        "tool_events": [],
+    }
     observed: list[dict[str, Any]] = []
 
     def execute(call: ToolCall) -> dict[str, Any]:
@@ -160,9 +167,19 @@ def resolve_action(session: dict[str, Any], approve: bool) -> dict[str, Any]:
     else:
         event = {"tool": pending["name"], "args": pending["args"], "result": {"status": "cancelled"}}
         status, answer = "action_cancelled", "Đã hủy. Không thực hiện thao tác."
-    record = {"turn_index": len(session["turns"]) + 1, "user": "[UI] Xác nhận thực hiện" if approve else "[UI] Hủy thao tác",
-              "started_at": timestamp(), "ended_at": timestamp(), "status": status,
-              "assistant_text": answer, "rounds": [], "tool_events": [event], "duration_seconds": 0}
+    record = {
+        "turn_index": len(session["turns"]) + 1,
+        "user": "[UI] Xác nhận thực hiện" if approve else "[UI] Hủy thao tác",
+        "version": session["version"],
+        "artifact_version": session["artifact_version"],
+        "started_at": timestamp(),
+        "ended_at": timestamp(),
+        "status": status,
+        "assistant_text": answer,
+        "rounds": [],
+        "tool_events": [event],
+        "duration_seconds": 0,
+    }
     session["turns"].append(redact(record))
     session["history"].extend([{"role": "user", "content": record["user"]},
                                 {"role": "assistant", "content": answer + "\n" + json.dumps(redact(event), ensure_ascii=False)}])

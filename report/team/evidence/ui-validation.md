@@ -30,4 +30,4 @@ Không gửi Telegram thật. Luồng xác nhận/hủy đã kiểm tra bằng f
 
 ## Server và giới hạn xác minh
 
-Server chạy tại http://127.0.0.1:8501; `GET /_stcore/health` trả HTTP 200, nội dung `ok`. Browser automation không khả dụng trong môi trường nên chưa kiểm tra screenshot/responsive trực quan; AppTest đã kiểm tra widget và luồng tương tác. Chưa triển khai link public, chưa có đăng nhập/phân quyền cho phát hành công khai. Xem UI-GUIDE trước khi chia sẻ.
+Tại CP5, test offline mới nhất: `python -m pytest -q` — **128 passed, 0 failed**. Server chạy tại http://127.0.0.1:8501; `GET /_stcore/health` trả `ok`. Đã mở Quick Tunnel tạm thời tại https://perfectly-sell-sector-enormous.trycloudflare.com. Tunnel chỉ hoạt động trong khi tiến trình server và tunnel chạy; chưa có đăng nhập/phân quyền, nên chỉ chia sẻ trong nhóm tin cậy. Browser automation không khả dụng trong môi trường nên chưa kiểm tra screenshot/responsive trực quan; AppTest đã kiểm tra widget và luồng tương tác. Xem [UI-GUIDE](../../../docs/UI-GUIDE.md) trước khi chia sẻ.
